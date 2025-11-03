@@ -8,26 +8,43 @@ export default function Chat({ initial_messages }) {
   const inputRef = useRef(null);
 
   const [sendStatus, setSendStatus] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
-  //   const SendChatPrompt = async () => {
-  //     fetch(process.env.WATSONX_URL,
-  //         {method: 'POST',
-  //             hdeaders
-  //         }
-  //      );
-  //   };
+  const addNewMessage = (text, isRecieve) => {
+    setMessages((prev) => [...prev, [text, isRecieve]]);
+  };
 
-  const handleSend = () => {
-    setSendStatus(true);
+  const SendChatPrompt = async (userText) => {
+    var data = await fetch('/api/watsonx', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: userText,
+      }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success) {
+          addNewMessage(data.message, false);
+          setSendStatus(false);
+          setIsLoading(false);
+        } else {
+          setIsLoading(false);
+          setIsError(true);
+        }
+      });
+  };
+
+  const handleSend = async () => {
     const text = inputRef.current?.value.trim();
     if (!text) return;
-    setMessages((prev) => [...prev, [text, true]]);
-    inputRef.current.value = '';
-    // SendChatPrompt();
 
-    // These lines added until we have functioning fetch callback
     setSendStatus(true);
-    console.log('did not send, wait until implemented!');
+    setIsLoading(true);
+    addNewMessage(text, true);
+    inputRef.current.value = '';
+    await SendChatPrompt(text);
   };
 
   const handleKeyDown = (e) => {
@@ -54,6 +71,19 @@ export default function Chat({ initial_messages }) {
               {message}
             </div>
           ))}
+          {isLoading && (
+            <div className={`${style.message} ${style.received}`}>
+              <div className={style.message_loading} />
+            </div>
+          )}
+          {isError && (
+            <div
+              className={`${style.message} ${style.received} ${style.message_error}`}
+            >
+              Finnet AI is having trouble and cannot respond at this time.
+              Sorry, try again later, goodbye! 👋
+            </div>
+          )}
         </div>
         <div className={style.input_section}>
           <input
@@ -61,15 +91,14 @@ export default function Chat({ initial_messages }) {
             placeholder='Enter your question here.'
             onKeyDown={handleKeyDown}
             ref={inputRef}
+            disabled={sendStatus}
           />
           <button
             onClick={handleSend}
             className={style.send_button}
             disabled={sendStatus}
           >
-            <div
-              style={{ position: 'relative', width: '2.5em', height: '2.5em' }}
-            >
+            <div>
               <Image
                 src='/icons/send-button.png'
                 alt='send button'

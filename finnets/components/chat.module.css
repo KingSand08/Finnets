@@ -3,6 +3,7 @@
   --chat-input-h: 8em;
 }
 
+/* Main page div settings */
 .chat_page {
   display: flex;
   flex-direction: column;
@@ -11,6 +12,7 @@
   padding-top: var(--chat-header-h);
 }
 
+/* Page title header CSS */
 .chat_header {
   position: fixed;
   top: 0;
@@ -23,12 +25,60 @@
   border-bottom: 1px solid #ccc;
 }
 
+/* Message Box Container */
 .message_section {
   padding: 0 0 9em 0;
   position: absolute;
   width: 100%;
   display: flex;
   flex-direction: column;
+}
+
+/* General Message CSS */
+.message {
+  padding: 0.6em 0.8em;
+  border-radius: 10px;
+  width: fit-content;
+  /* user-select: none; */
+  margin: 0.2em 0;
+  max-width: 60%;
+}
+
+/* Message loading animation */
+.message_loading {
+  width: 2em;
+  aspect-ratio: 2;
+  --_g: no-repeat radial-gradient(circle closest-side, #000 90%, #0000);
+  background: var(--_g), var(--_g), var(--_g);
+  background-size: calc(100% / 2.5) 30%;
+  animation: l3 1s infinite linear;
+}
+@keyframes l3 {
+  0%,
+  55%,
+  100% {
+    background-position: 0% 30%, 50% 30%, 100% 30%;
+  }
+  10% {
+    background-position: 0% 0%, 50% 30%, 100% 30%;
+  }
+  25% {
+    background-position: 0% 30%, 50% 0%, 100% 30%;
+  }
+  40% {
+    background-position: 0% 30%, 50% 30%, 100% 0%;
+  }
+}
+
+.message.message_loading {
+  margin: 0;
+  padding: 0;
+}
+
+/* Recieved Messages CSS */
+.received {
+  background-color: #d0d0d0;
+  align-self: flex-start;
 }
 .message_section .sent:last-child::after {
   content: 'Sent';
@@ -41,27 +91,25 @@
   font-size: 12px;
 }
 
-.message {
-  padding: 0.6em 0.8em;
-  border-radius: 10px;
-  width: fit-content;
-  /* user-select: none; */
-  margin: 0.2em 0;
-  max-width: 60%;
-}
-
-.received {
-  background-color: #d0d0d0;
-  align-self: flex-start;
-}
-
+/* Sent Messages CSS */
 .sent {
   background-color: var(--foreground);
   color: var(--background);
   align-self: flex-end;
   margin-left: auto;
 }
+.message_section .sent:last-child::after {
+  content: 'Sent';
+  position: absolute;
+  font-size: 0.8em;
+  bottom: 10.5em;
+  right: 0;
+  color: #888;
+  padding: 5px;
+  font-size: 12px;
+}
 
+/* Input bar outter area */
 .input_section {
   position: fixed;
   bottom: 0;
@@ -77,6 +125,7 @@
   box-sizing: border-box;
 }
 
+/* User Message Send Button */
 .send_button {
   background: none;
   border: none;
@@ -85,9 +134,29 @@
   cursor: pointer;
 }
 
+.send_button div {
+  position: relative;
+  width: 2.5em;
+  height: 2.5em;
+}
+
+.send_button:disabled img {
+  filter: grayscale(100%);
+}
+
+/* User Message Input Bar */
 .message_input {
   border-radius: 10px;
   border: 1px solid #ccc;
   padding: 1em 1.5em;
   width: 100%;
+}
+
+.message_input:disabled {
+  background-color: #bcbcbc;
+}
+
+/* Message Error CSS */
+.message_error {
+  background-color: rgb(237, 181, 181);
 }
