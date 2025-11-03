@@ -7,15 +7,31 @@ export default function Chat({ initial_messages }) {
   const [messages, setMessages] = useState(initial_messages);
   const inputRef = useRef(null);
 
+  const [sendStatus, setSendStatus] = useState(false);
+
+  //   const SendChatPrompt = async () => {
+  //     fetch(process.env.WATSONX_URL,
+  //         {method: 'POST',
+  //             hdeaders
+  //         }
+  //      );
+  //   };
+
   const handleSend = () => {
+    setSendStatus(true);
     const text = inputRef.current?.value.trim();
     if (!text) return;
     setMessages((prev) => [...prev, [text, true]]);
     inputRef.current.value = '';
+    // SendChatPrompt();
+
+    // These lines added until we have functioning fetch callback
+    setSendStatus(true);
+    console.log('did not send, wait until implemented!');
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !sendStatus) {
       e.preventDefault();
       handleSend();
     }
@@ -46,7 +62,11 @@ export default function Chat({ initial_messages }) {
             onKeyDown={handleKeyDown}
             ref={inputRef}
           />
-          <button onClick={handleSend} className={style.send_button}>
+          <button
+            onClick={handleSend}
+            className={style.send_button}
+            disabled={sendStatus}
+          >
             <div
               style={{ position: 'relative', width: '2.5em', height: '2.5em' }}
             >
