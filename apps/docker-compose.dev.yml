@@ -1,16 +1,31 @@
 name: Finnets-App
 services:
+  mock_bank_database:
+    image: mysql
+    container_name: mock_bank_database
+    env_file:
+      - ../.env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASS}
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./mock_bank_database/createDB.sql:/docker-entrypoint-initdb.d/createDB.sql:ro
+    ports:
+      - "3306:3306"
+
   finnets_applet:
     build:
       context: ./finnets
       dockerfile: ./docker/Dockerfile.dev
+    env_file:
+      - ../.env
     environment:
       - APP_NAME=mock_bank_site
       - NODE_ENV=development
     ports:
       - "3001:3000"
-    # depends_on:
-    #   - mock_bank_database
+    depends_on:
+      - mock_bank_database
     volumes:
       - ./finnets/package.json:/finnets_applet/package.json
       - ./finnets/app:/finnets_applet/app/
@@ -18,16 +33,6 @@ services:
       - ./finnets/components:/finnets_applet/components/
     working_dir: /finnets_applet
     command: sh -c "npm install && npm run dev"
-
-  #! FOR FUTURE IMPLEMENTATION
-  # mock_bank_database:
-  #   image: mysql
-  #   container_name: mock_bank_database
-  #   environment:
-  #     MYSQL_USER:
-  #     MYSQL_ROOT_PASSWORD:
-  #     MYSQL_DATABASE:
-  #   command: "mysql"
 
   mock_bank_app:
     build:
@@ -39,12 +44,15 @@ services:
     ports:
       - "3000:3000"
     #! FOR FUTURE IMPLEMENTATION
-    # depends_on:
-    #   - mock_bank_database
+    depends_on:
+      - mock_bank_database
     volumes:
+      - ../.env:/mock_bank/.env
       - ./mock_bank/package.json:/mock_bank_site/package.json
       - ./mock_bank/app:/mock_bank_site/app/
       - ./mock_bank/public:/mock_bank_site/public/
       - ./mock_bank/components:/mock_bank_site/components/
     working_dir: /mock_bank_site
     command: sh -c "npm install && npm run dev"
+volumes:
+  db_data:
