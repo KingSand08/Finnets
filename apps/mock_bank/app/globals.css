@@ -107,10 +107,3 @@ form input:disabled {
   background-color: #bcbcbc;
   border-color: #bcbcbc;
 }
-
-form button {
-  margin-top: 3em;
-  margin-left: auto;
-  margin-right: auto;
-  width: 80%;
-}
