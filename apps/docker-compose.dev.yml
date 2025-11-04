@@ -27,6 +27,9 @@ services:
     depends_on:
       - mock_bank_database
     volumes:
+      - ./finnets/eslint.config.mjs:/finnets_applet/eslint.config.mjs
+      - ./finnets/jsconfig.json:/finnets_applet/jsconfig.json
+      - ./finnets/next.config.mjs:/finnets_applet/next.config.mjs
       - ./finnets/package.json:/finnets_applet/package.json
       - ./finnets/app:/finnets_applet/app/
       - ./finnets/public:/finnets_applet/public/
@@ -38,16 +41,19 @@ services:
     build:
       context: ./mock_bank
       dockerfile: ./docker/Dockerfile.dev
+    env_file:
+      - ../.env
     environment:
       - APP_NAME=mock_bank_site
       - NODE_ENV=development
     ports:
       - "3000:3000"
-    #! FOR FUTURE IMPLEMENTATION
     depends_on:
       - mock_bank_database
     volumes:
-      - ../.env:/mock_bank/.env
+      - ./mock_bank/eslint.config.mjs:/mock_bank_site/eslint.config.mjs
+      - ./mock_bank/jsconfig.json:/mock_bank_site/jsconfig.json
+      - ./mock_bank/next.config.mjs:/mock_bank_site/next.config.mjs
       - ./mock_bank/package.json:/mock_bank_site/package.json
       - ./mock_bank/app:/mock_bank_site/app/
       - ./mock_bank/public:/mock_bank_site/public/
