@@ -1,15 +1,15 @@
-import { NextResponse } from "next/server";
-import { getBalanceByAccount } from "../../../datacenter/queries/getBalanceByAccount.js";
+import { NextResponse } from 'next/server';
+import { getBalanceByAccount } from '../../../../datacenter/queries/getBalanceByAccount.js';
 
 export const GET = async (request) => {
-  console.log("API Route /api/getBalance called.");
+  console.log('API Route /api/getBalance called.');
   const { searchParams } = new URL(request.url);
-  const username = searchParams.get("username");
-  const account_number = searchParams.get("account-number");
+  const username = searchParams.get('username');
+  const account_number = searchParams.get('account-number');
 
   if (!username || !account_number) {
     return NextResponse.json(
-      { error: "Missing username and account_number parameters." },
+      { error: 'Missing username and account_number parameters.' },
       { status: 400 }
     );
   }
@@ -33,7 +33,7 @@ export const GET = async (request) => {
       return NextResponse.json(
         {
           success: false,
-          message: "No account found for the given username.",
+          message: 'No account found for the given username.',
         },
         { status: 404 }
       );
@@ -42,7 +42,7 @@ export const GET = async (request) => {
     return NextResponse.json({ success: true, data: result });
   } catch (error) {
     return NextResponse.json(
-      { error: "Failed to fetch balance." },
+      { error: 'Failed to fetch balance.' },
       { status: 500 }
     );
   }

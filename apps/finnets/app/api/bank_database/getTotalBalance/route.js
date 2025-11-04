@@ -1,17 +1,17 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 import {
   getTotalBalanceByUsername,
   getBalanceByUsernameAndType,
-} from "../../../datacenter/queries/getTotalBalance.js";
+} from '../../../../datacenter/queries/getTotalBalance.js';
 
 export const GET = async (request) => {
   const { searchParams } = new URL(request.url);
-  const username = searchParams.get("username");
-  const type = searchParams.get("type");
+  const username = searchParams.get('username');
+  const type = searchParams.get('type');
 
   if (!username) {
     return NextResponse.json(
-      { error: "Missing username parameter." },
+      { error: 'Missing username parameter.' },
       { status: 400 }
     );
   }
@@ -38,7 +38,7 @@ export const GET = async (request) => {
       return NextResponse.json(
         {
           success: false,
-          message: "No account found for the given username.",
+          message: 'No account found for the given username.',
         },
         { status: 404 }
       );
@@ -47,7 +47,7 @@ export const GET = async (request) => {
     return NextResponse.json({ success: true, data: result });
   } catch (error) {
     return NextResponse.json(
-      { error: "Failed to fetch total balance" },
+      { error: 'Failed to fetch total balance' },
       { status: 500 }
     );
   }
