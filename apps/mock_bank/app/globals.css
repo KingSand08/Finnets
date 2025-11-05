@@ -1,27 +1,50 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #efeff0;
+  --foreground: #573aff;
+  --heading-text-color: #000712;
+  --body-text-color: #000712;
+
+  --background-selected: #adadad;
+  --foreground-selected: #4b32d9;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 html,
 body {
   max-width: 100vw;
+  height: 100%;
   overflow-x: hidden;
+  padding: 1em 1.4em;
+}
+
+@media (max-width: 790px) {
+  html,
+  body {
+    padding: 1em 1em;
+  }
 }
 
 body {
-  color: var(--foreground);
+  color: var(--body-text-color);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Ubuntu, Inter, Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--headding-text-color);
 }
 
 * {
@@ -35,8 +58,52 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
   }
+} */
+
+button {
+  background-color: var(--foreground);
+  color: var(--background);
+  padding: 0.5em 1em;
+  border-radius: 120;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  transform: translateY(-0.1em);
+  box-shadow: 2px 3px 2px #626262;
+}
+
+button:active {
+  background-color: var(--foreground-selected);
+  transform: translateY(0em);
+  box-shadow: 1px 2px 1px #626262;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form label ~ * {
+  margin-top: 1.8em;
+}
+
+form input {
+  padding: 1em 1.2em;
+  border-radius: 20;
+  border: 2px solid #13007d;
+}
+
+form input:focus {
+  border-color: #2c07ff;
+}
+
+form input:disabled {
+  background-color: #bcbcbc;
+  border-color: #bcbcbc;
 }

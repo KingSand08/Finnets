@@ -1,0 +1,35 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  width: 80%;
+  max-width: 1000px;
+  gap: 5em;
+}
+
+.page h1 {
+  text-align: center;
+}
+
+.loading_anim {
+  margin: 0 auto;
+  width: 3em;
+  aspect-ratio: 1;
+  border-radius: 80%;
+  border: 9px solid var(--background-selected);
+  border-right-color: var(--foreground);
+  animation: l2 1s infinite linear;
+}
+@keyframes l2 {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.error {
+  margin: 0 auto;
+  background-color: rgb(237, 181, 181);
+  text-align: center;
+  padding: 1em 1.5em;
+  border-radius: 60;
+}

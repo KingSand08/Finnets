@@ -27,7 +27,9 @@ services:
     depends_on:
       - mock_bank_database
     volumes:
+      - ./finnets/lib:/finnets_applet/lib
       - ./finnets/eslint.config.mjs:/finnets_applet/eslint.config.mjs
+      - ./finnets/db:/finnets_applet/db
       - ./finnets/jsconfig.json:/finnets_applet/jsconfig.json
       - ./finnets/next.config.mjs:/finnets_applet/next.config.mjs
       - ./finnets/package.json:/finnets_applet/package.json
@@ -51,7 +53,9 @@ services:
     depends_on:
       - mock_bank_database
     volumes:
+      - ./mock_bank/lib:/mock_bank_site/lib
       - ./mock_bank/eslint.config.mjs:/mock_bank_site/eslint.config.mjs
+      - ./mock_bank/db:/mock_bank_site/db
       - ./mock_bank/jsconfig.json:/mock_bank_site/jsconfig.json
       - ./mock_bank/next.config.mjs:/mock_bank_site/next.config.mjs
       - ./mock_bank/package.json:/mock_bank_site/package.json

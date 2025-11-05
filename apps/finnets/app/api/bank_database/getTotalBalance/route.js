@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import {
   getTotalBalanceByUsername,
   getBalanceByUsernameAndType,
-} from '../../../../datacenter/queries/getTotalBalance.js';
+} from '../../../../db/queries/getTotalBalance.js';
 
 export const GET = async (request) => {
   const { searchParams } = new URL(request.url);

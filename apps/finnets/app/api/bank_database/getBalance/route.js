@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getBalanceByAccount } from '../../../../datacenter/queries/getBalanceByAccount.js';
+import { getBalanceByAccount } from '../../../../db/queries/getBalanceByAccount.js';
 
 export const GET = async (request) => {
   console.log('API Route /api/getBalance called.');
