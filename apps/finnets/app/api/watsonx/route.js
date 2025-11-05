@@ -77,10 +77,10 @@ export async function POST(request) {
           }
         })
         .join('\n');
-      prompt = `You are a helpful assistant. Respond in plain text only, without any markdown formatting (no bold, italics, bullet points, or numbered lists). Use simple sentences and paragraphs.\n\n${historyText}\nUser: ${message}\nAssistant:`;
+      prompt = `${historyText}\nUser: ${message}\nAssistant:`;
     } else {
-      // plain text instruction
-      prompt = `You are a helpful assistant. Respond in plain text only, without any markdown formatting (no bold, italics, bullet points, or numbered lists). Use simple sentences and paragraphs.\n\nUser: ${message}\nAssistant:`;
+      // Simple prompt without system message that might cause example generation
+      prompt = `User: ${message}\nAssistant:`;
     }
 
     // Call watsonx.ai API for text generation
@@ -94,7 +94,8 @@ export async function POST(request) {
         decoding_method: 'greedy',
         max_new_tokens: 200,
         min_new_tokens: 0,
-        repetition_penalty: 1,
+        repetition_penalty: 1.2,
+        stop_sequences: ['\nUser:', 'User:', '\n\nUser:'],
       },
     };
 
@@ -136,9 +137,39 @@ export async function POST(request) {
                          'No response generated';
     
     // Clean up the response, remove markdown formatting and trim whitespace
-    const cleanedText = typeof generatedText === 'string' 
+    let cleanedText = typeof generatedText === 'string' 
       ? generatedText.trim() 
       : String(generatedText).trim();
+    
+    // If the response includes the input prompt, extract only the new generated text
+    // The watsonx API sometimes returns the full prompt + generated text
+    // We need to extract only the part after "Assistant:" marker
+    const assistantIndex = cleanedText.indexOf('Assistant:');
+    if (assistantIndex !== -1) {
+      // Extract only the text after the first "Assistant:" marker
+      cleanedText = cleanedText.substring(assistantIndex + 'Assistant:'.length).trim();
+    }
+    
+    // Remove any remaining system prompt artifacts at the start
+    cleanedText = cleanedText.replace(/^You are a helpful assistant[^]*?Assistant:/i, '').trim();
+    
+    // If the response contains multiple User: Assistant: pairs (example conversations),
+    // extract only the first Assistant response (before the next "User:" appears)
+    // Check for "\nUser:" first (more common pattern)
+    let nextUserIndex = cleanedText.indexOf('\nUser:');
+    if (nextUserIndex === -1) {
+      // Fall back to checking for "User:" not at the start
+      nextUserIndex = cleanedText.indexOf('User:');
+      if (nextUserIndex === 0) {
+        // If "User:" is at the start, it's likely part of the prompt, so ignore it
+        nextUserIndex = -1;
+      }
+    }
+    
+    if (nextUserIndex !== -1 && nextUserIndex > 0) {
+      // If there's a next "User:" marker, extract only up to that point
+      cleanedText = cleanedText.substring(0, nextUserIndex).trim();
+    }
     
     // Strip markdown formatting - remove bold, italics, headers, lists, etc.
     const plainText = cleanedText
@@ -150,7 +181,7 @@ export async function POST(request) {
       .replace(/^\d+\.\s+/gm, '')          // Remove numbered list prefixes (1. item)
       .replace(/^-\s+/gm, '')              // Remove dash list prefixes (- item)
       .replace(/^\*\s+/gm, '')            // Remove markdown bullet points (* item)
-      .replace(/\n{3,}/g, '\n\n')          // Normalize multiple newlines to double (remove later, this might be weird)
+      .replace(/\n{3,}/g, '\n\n')          // Normalize multiple newlines to double
       .replace(/\n\s*\n/g, '\n\n')        // Clean up extra whitespace between paragraphs
       .trim();
 
