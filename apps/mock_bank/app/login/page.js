@@ -13,16 +13,19 @@ const LoginPage = () => {
         <h1>Login Page</h1>
 
         <Form className={style.form} action={action}>
-          <label htmlFor='name'>Your First Name</label>
-          <input id='name' name='name' placeholder='name...' />
-
+          <label htmlFor='username'>Username</label>
+          <input
+            id='username'
+            name='username'
+            type='text'
+            placeholder='Username...'
+          />
           <label htmlFor='email'>Email</label>
           <input
             id='email'
             name='email'
             type='email'
             placeholder='example@domain.com'
-            disabled={error}
           />
           <label htmlFor='password'>Password</label>
           <input
@@ -30,7 +33,6 @@ const LoginPage = () => {
             name='password'
             type='password'
             placeholder='Password...'
-            disabled={error}
           />
           <button type='submit'>Sign In</button>
         </Form>
@@ -42,8 +44,7 @@ const LoginPage = () => {
         {error && (
           <>
             <div className={style.error}>
-              Sorry, there was an error handling your information, try again
-              later please!
+              No account matched our records. Please try again.
             </div>
           </>
         )}

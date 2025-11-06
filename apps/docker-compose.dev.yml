@@ -48,6 +48,11 @@ services:
     environment:
       - APP_NAME=mock_bank_site
       - NODE_ENV=development
+      - DB_HOST=mock_bank_database
+      - DB_PORT=3306
+      - DB_NAME=Finnets
+      - DB_USER=root
+      - DB_PASS=${DATABASE_PASS}
     ports:
       - "3000:3000"
     depends_on:
