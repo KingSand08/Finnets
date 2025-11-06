@@ -49,8 +49,3 @@
   font-weight: bold;
   font-family: Ubuntu, Inter, Arial, Helvetica, sans-serif;
 }
-
-.taskbar svg {
-  width: var(--nav-button-size);
-  height: var(--nav-button-size);
-}
