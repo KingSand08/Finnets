@@ -1,3 +1,4 @@
+'use server';
 import {
   DeleteButtonSection,
   SettingColorControl,
@@ -7,6 +8,7 @@ import {
 import SettingControlSection from '@/components/Settings/SettingControlSection';
 import fontList from '@/db/static/fontSupport.json';
 import style from './settingspage.module.css';
+import { doNothingTemp } from '@/lib/doNothing';
 
 const SettingsPage = () => {
   const fonts = Array.isArray(fontList)
@@ -23,10 +25,17 @@ const SettingsPage = () => {
           <SettingControlSection>
             <h3>User Data</h3>
             <div className={style.selection_options}>
-              <SettingSwitchControl title='Use my data for personalized AI recommendations' />
-              <SettingSwitchControl title='Track in-app activity to improve experience' />
+              <SettingSwitchControl
+                title='Use my data for personalized AI recommendations'
+                func={doNothingTemp}
+              />
+              <SettingSwitchControl
+                title='Track in-app activity to improve experience'
+                func={doNothingTemp}
+              />
               <SettingSelectionControl
                 title='Auto-delete usage data after'
+                func={doNothingTemp}
                 list={['Never', 'Yes']}
               />
               <DeleteButtonSection />
@@ -39,23 +48,41 @@ const SettingsPage = () => {
           <SettingControlSection>
             <h3>Fonts</h3>
             <div className={style.selection_options}>
-              <SettingSelectionControl list={fonts} title='Headings' />
-              <SettingSelectionControl list={fonts} title='Body' />
+              <SettingSelectionControl
+                list={fonts}
+                title='Headings'
+                func={doNothingTemp}
+              />
+              <SettingSelectionControl
+                list={fonts}
+                title='Body'
+                func={doNothingTemp}
+              />
             </div>
           </SettingControlSection>
           <SettingControlSection>
             <h3>Colors</h3>
             <div className={style.selection_options}>
               <SettingColorControl
-                baseColorCode='--background'
                 title='Background'
+                func={doNothingTemp}
+                baseColorCode='--background'
               />
               <SettingColorControl
-                baseColorCode='--foreground'
                 title='Foreground'
+                func={doNothingTemp}
+                baseColorCode='--foreground'
               />
-              <SettingColorControl baseColorCode='#000000' title='Heading' />
-              <SettingColorControl baseColorCode='#000000' title='Body' />
+              <SettingColorControl
+                title='Heading'
+                func={doNothingTemp}
+                baseColorCode='#000000'
+              />
+              <SettingColorControl
+                title='Body'
+                func={doNothingTemp}
+                baseColorCode='#000000'
+              />
             </div>
           </SettingControlSection>
         </div>
@@ -63,9 +90,18 @@ const SettingsPage = () => {
           <h2>Finnet Accessibility Control</h2>
           <SettingControlSection>
             <div className={style.selection_options}>
-              <SettingSwitchControl title='Enable Language Switch Button' />
-              <SettingSwitchControl title='Enable High Contrast Mode' />
-              <SettingSwitchControl title='Enable Page Searching' />
+              <SettingSwitchControl
+                title='Enable Language Switch Button'
+                func={doNothingTemp}
+              />
+              <SettingSwitchControl
+                title='Enable High Contrast Mode'
+                func={doNothingTemp}
+              />
+              <SettingSwitchControl
+                title='Enable Page Searching'
+                func={doNothingTemp}
+              />
             </div>
           </SettingControlSection>
         </div>

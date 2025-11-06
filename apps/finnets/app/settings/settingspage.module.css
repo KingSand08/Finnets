@@ -1,5 +1,10 @@
+.page {
+  overscroll-behavior: contain;
+}
+
 .page h1 {
   margin-bottom: 1em;
+  justify-content: center;
 }
 
 .page_section {

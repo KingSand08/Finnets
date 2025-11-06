@@ -1,14 +1,16 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useActionState } from 'react';
 import style from './settingcontrol.module.css';
 import DeleteButton from './DeleteButton';
 
-export const SettingSelectionControl = ({ title, list = [] }) => {
+export const SettingSelectionControl = ({ title, func, list = [] }) => {
+  const [error, action, isLoading] = useActionState(func, '');
+
   return (
     <div className={style.selection_container}>
       <h4>{title}</h4>
-      <form>
-        <select className={style.button}>
+      <form action={action}>
+        <select>
           {list.map((val) => (
             <option key={val} value={val}>
               {val}
@@ -20,7 +22,9 @@ export const SettingSelectionControl = ({ title, list = [] }) => {
   );
 };
 
-export const SettingColorControl = ({ title, baseColorCode }) => {
+export const SettingColorControl = ({ title, func, baseColorCode }) => {
+  const [error, action, isLoading] = useActionState(func, '');
+
   const isHex =
     typeof baseColorCode === 'string' && baseColorCode.startsWith('#');
 
@@ -45,7 +49,7 @@ export const SettingColorControl = ({ title, baseColorCode }) => {
   return (
     <div className={style.selection_container}>
       <h4>{title}</h4>
-      <form>
+      <form action={action} className={style.color_control}>
         <label>
           <span suppressHydrationWarning>{color}</span>
         </label>
@@ -61,7 +65,13 @@ export const SettingColorControl = ({ title, baseColorCode }) => {
   );
 };
 
-export const SettingSwitchControl = ({ title, prevStatus = false }) => {
+export const SettingSwitchControl = ({
+  title,
+  func = {},
+  prevStatus = false,
+}) => {
+  const [error, action, isLoading] = useActionState(func, '');
+
   const [isOn, setIsOn] = useState(prevStatus);
 
   const handleToggle = () => setIsOn((prev) => !prev);
@@ -69,7 +79,7 @@ export const SettingSwitchControl = ({ title, prevStatus = false }) => {
   return (
     <div className={style.selection_container}>
       <h4>{title}</h4>
-      <form>
+      <form action={action}>
         <label className={style.switch}>
           <input type='checkbox' checked={isOn} onChange={handleToggle} />
           <span className={style.slider}></span>

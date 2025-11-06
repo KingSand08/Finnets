@@ -73,3 +73,65 @@ input:checked + .slider:before {
   font-size: 0.9rem;
   user-select: none;
 }
+
+.selection_container select {
+  padding: 0.6em;
+  border-radius: 30;
+  border: 2px solid #d1d1d1;
+  font-family: var(--language-font);
+  background-color: var(--background);
+  width: 100%;
+}
+
+.select_form {
+  font-size: large;
+}
+
+.color_control {
+  padding: 0.6em;
+  border-radius: 30;
+  border: 2px solid #d1d1d1;
+  font-family: var(--language-font);
+  background-color: var(--background);
+  width: 100%;
+}
+
+.color_control label {
+  margin-right: 1em;
+  width: 5.5em;
+  overflow-x: hidden;
+}
+
+.color_control input {
+  width: 100%;
+  border: none;
+  border-radius: 80;
+}
+
+/* Chrome/Safari */
+.color_control input[type='color'] {
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.color_control input[type='color']::-webkit-color-swatch-wrapper {
+  padding: 0;
+  border-radius: 80px;
+}
+
+.color_control input[type='color']::-webkit-color-swatch {
+  border: none;
+  border-radius: 80px;
+  box-shadow: 0 0 0 2px #d1d1d1 inset;
+}
+
+/* Firefox */
+.color_control input[type='color']::-moz-color-swatch {
+  border: none;
+  border-radius: 80px;
+  box-shadow: 0 0 0 2px #d1d1d1 inset;
+}
