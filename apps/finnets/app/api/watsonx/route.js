@@ -1,5 +1,102 @@
 import { NextResponse } from 'next/server';
 
+/**
+ * Check if a message is related to banking or financial services using AI
+ * @param {string} message - The user's message
+ * @param {string} accessToken - IAM access token for Watsonx API
+ * @param {string} watsonxUrl - Watsonx API URL
+ * @param {string} modelId - Model ID to use
+ * @param {string} projectId - Project ID (optional)
+ * @param {string} spaceId - Space ID (optional)
+ * @returns {Promise<boolean>} - True if the message is bank-related, false otherwise
+ */
+async function checkIfBankRelatedWithAI(message, accessToken, watsonxUrl, modelId, projectId, spaceId) {
+  try {
+    // Create a classification prompt
+    const classificationPrompt = `Analyze this message. Should this message be allowed through?
+    
+ALLOW (answer "yes"):
+- Banking/financial questions (accounts, transactions, balances, saving, investing, loans, etc.)
+- Simple greetings and casual conversation (hello, hi, hey, thanks, etc.)
+- Brief acknowledgments and polite responses
+
+REJECT (answer "no"):
+- Non-banking questions (math, weather, games, general knowledge, jokes, etc.)
+- Mixed messages: banking questions AND non-banking topics together
+- Questions trying to use this as a general chatbot
+
+The message must be either banking-related OR a simple greeting/casual conversation. Answer only "yes" or "no".
+
+Message: "${message}"
+
+Answer:`;
+
+    const watsonxEndpoint = `${watsonxUrl}/ml/v1/text/generation?version=2024-03-13`;
+    
+    const requestBody = {
+      model_id: modelId,
+      input: classificationPrompt,
+      parameters: {
+        decoding_method: 'greedy',
+        max_new_tokens: 20,  // Short response - just "yes" or "no" with some context
+        min_new_tokens: 0,
+        repetition_penalty: 1.2,
+        stop_sequences: ['\n', 'Message:', 'User:', '\n\n'],
+      },
+    };
+
+    if (projectId) {
+      requestBody.project_id = projectId;
+    } else if (spaceId) {
+      requestBody.space_id = spaceId;
+    }
+
+    const watsonxResponse = await fetch(watsonxEndpoint, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!watsonxResponse.ok) {
+      console.error('Watsonx classification error:', await watsonxResponse.text());
+      // If classification fails, default to allowing the message (fail open)
+      return true;
+    }
+
+    const watsonxData = await watsonxResponse.json();
+    const generatedText = watsonxData.results?.[0]?.generated_text || 
+                         watsonxData.results?.[0]?.text ||
+                         watsonxData.generated_text || 
+                         watsonxData.text ||
+                         '';
+
+    // Extract just the answer (yes or no)
+    // The response might include the prompt, so extract just the answer part
+    let answer = generatedText.toLowerCase().trim();
+    
+    // Remove the prompt if it's included in the response
+    const answerIndex = answer.indexOf('answer:');
+    if (answerIndex !== -1) {
+      answer = answer.substring(answerIndex + 7).trim();
+    }
+    
+    // Extract first word (should be "yes" or "no")
+    const firstWord = answer.split(/\s+/)[0] || '';
+    
+    // Check if the answer is "yes"
+    const isBankRelated = firstWord === 'yes';
+    
+    return isBankRelated;
+  } catch (error) {
+    console.error('Error in AI classification:', error);
+    // If classification fails, default to allowing the message (fail open)
+    return true;
+  }
+}
+
 /** Taken from jupyter notebook
  * POST /api/watsonx
  * Chatbot endpoint for watsonx.ai integration
@@ -62,6 +159,23 @@ export async function POST(request) {
     }
 
     const { access_token } = await tokenResponse.json();
+
+    // Guard against non-bank related questions using AI
+    const isBankRelated = await checkIfBankRelatedWithAI(
+      message,
+      access_token,
+      watsonxUrl,
+      modelId,
+      projectId,
+      spaceId
+    );
+    
+    if (!isBankRelated) {
+      return NextResponse.json({
+        success: true,
+        message: "I'm a banking assistant and can only help with questions related to banking, accounts, transactions, balances, and other financial services. Please ask me one focused banking question at a time about your banking needs!",
+      });
+    }
 
     // Build the prompt for chatbot conversation
     let prompt;
