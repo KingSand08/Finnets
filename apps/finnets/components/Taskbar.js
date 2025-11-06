@@ -27,7 +27,6 @@ const Taskbar = () => {
           />
           <p>Chat</p>
         </Link>
-        {/*//! ADD SETTINGS LATER */}
         <Link href={'/settings'}>
           <SvgComponent
             src='/icons/settings.svg'

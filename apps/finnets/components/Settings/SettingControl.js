@@ -61,8 +61,9 @@ export const SettingColorControl = ({ title, baseColorCode }) => {
   );
 };
 
-export const SettingSwitchControl = ({ title, defaultOn = true }) => {
-  const [isOn, setIsOn] = useState(defaultOn);
+export const SettingSwitchControl = ({ title, prevStatus = false }) => {
+  const [isOn, setIsOn] = useState(prevStatus);
+
   const handleToggle = () => setIsOn((prev) => !prev);
 
   return (

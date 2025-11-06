@@ -1,11 +1,30 @@
 .selection_container {
-  display: flex;
-  justify-content: space-between;
-  gap: 2em;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-content: space-around;
+  gap: 10em;
+  width: 100%;
 }
 
 .selection_container h4 {
   font-style: italic;
+  margin-right: auto;
+}
+
+.selection_container form {
+  display: flex;
+  width: 100%;
+  justify-content: right;
+}
+
+@media (max-width: 750px) {
+  .selection_container {
+    gap: 5em;
+  }
+
+  .selection_container form {
+    justify-content: center;
+  }
 }
 
 .switch {

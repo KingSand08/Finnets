@@ -1,5 +1,21 @@
+.page h1 {
+  margin-bottom: 1em;
+}
+
+.page_section {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5em;
+}
+
 .selection_options {
   display: flex;
   flex-direction: column;
   gap: 1.5em;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
 }
