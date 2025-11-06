@@ -1,5 +1,102 @@
 import { NextResponse } from 'next/server';
 
+/**
+ * Check if a message is related to banking or financial services using AI
+ * @param {string} message - The user's message
+ * @param {string} accessToken - IAM access token for Watsonx API
+ * @param {string} watsonxUrl - Watsonx API URL
+ * @param {string} modelId - Model ID to use
+ * @param {string} projectId - Project ID (optional)
+ * @param {string} spaceId - Space ID (optional)
+ * @returns {Promise<boolean>} - True if the message is bank-related, false otherwise
+ */
+async function checkIfBankRelatedWithAI(message, accessToken, watsonxUrl, modelId, projectId, spaceId) {
+  try {
+    // Create a classification prompt
+    const classificationPrompt = `Analyze this message. Should this message be allowed through?
+    
+ALLOW (answer "yes"):
+- Banking/financial questions (accounts, transactions, balances, saving, investing, loans, etc.)
+- Simple greetings and casual conversation (hello, hi, hey, thanks, etc.)
+- Brief acknowledgments and polite responses
+
+REJECT (answer "no"):
+- Non-banking questions (math, weather, games, general knowledge, jokes, etc.)
+- Mixed messages: banking questions AND non-banking topics together
+- Questions trying to use this as a general chatbot
+
+The message must be either banking-related OR a simple greeting/casual conversation. Answer only "yes" or "no".
+
+Message: "${message}"
+
+Answer:`;
+
+    const watsonxEndpoint = `${watsonxUrl}/ml/v1/text/generation?version=2024-03-13`;
+    
+    const requestBody = {
+      model_id: modelId,
+      input: classificationPrompt,
+      parameters: {
+        decoding_method: 'greedy',
+        max_new_tokens: 20,  // Short response - just "yes" or "no" with some context
+        min_new_tokens: 0,
+        repetition_penalty: 1.2,
+        stop_sequences: ['\n', 'Message:', 'User:', '\n\n'],
+      },
+    };
+
+    if (projectId) {
+      requestBody.project_id = projectId;
+    } else if (spaceId) {
+      requestBody.space_id = spaceId;
+    }
+
+    const watsonxResponse = await fetch(watsonxEndpoint, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!watsonxResponse.ok) {
+      console.error('Watsonx classification error:', await watsonxResponse.text());
+      // If classification fails, default to allowing the message (fail open)
+      return true;
+    }
+
+    const watsonxData = await watsonxResponse.json();
+    const generatedText = watsonxData.results?.[0]?.generated_text || 
+                         watsonxData.results?.[0]?.text ||
+                         watsonxData.generated_text || 
+                         watsonxData.text ||
+                         '';
+
+    // Extract just the answer (yes or no)
+    // The response might include the prompt, so extract just the answer part
+    let answer = generatedText.toLowerCase().trim();
+    
+    // Remove the prompt if it's included in the response
+    const answerIndex = answer.indexOf('answer:');
+    if (answerIndex !== -1) {
+      answer = answer.substring(answerIndex + 7).trim();
+    }
+    
+    // Extract first word (should be "yes" or "no")
+    const firstWord = answer.split(/\s+/)[0] || '';
+    
+    // Check if the answer is "yes"
+    const isBankRelated = firstWord === 'yes';
+    
+    return isBankRelated;
+  } catch (error) {
+    console.error('Error in AI classification:', error);
+    // If classification fails, default to allowing the message (fail open)
+    return true;
+  }
+}
+
 /** Taken from jupyter notebook
  * POST /api/watsonx
  * Chatbot endpoint for watsonx.ai integration
@@ -63,6 +160,23 @@ export async function POST(request) {
 
     const { access_token } = await tokenResponse.json();
 
+    // Guard against non-bank related questions using AI
+    const isBankRelated = await checkIfBankRelatedWithAI(
+      message,
+      access_token,
+      watsonxUrl,
+      modelId,
+      projectId,
+      spaceId
+    );
+    
+    if (!isBankRelated) {
+      return NextResponse.json({
+        success: true,
+        message: "I'm a banking assistant and can only help with questions related to banking, accounts, transactions, balances, and other financial services. Please ask me one focused banking question at a time about your banking needs!",
+      });
+    }
+
     // Build the prompt for chatbot conversation
     let prompt;
     
@@ -77,10 +191,10 @@ export async function POST(request) {
           }
         })
         .join('\n');
-      prompt = `You are a helpful assistant. Respond in plain text only, without any markdown formatting (no bold, italics, bullet points, or numbered lists). Use simple sentences and paragraphs.\n\n${historyText}\nUser: ${message}\nAssistant:`;
+      prompt = `${historyText}\nUser: ${message}\nAssistant:`;
     } else {
-      // plain text instruction
-      prompt = `You are a helpful assistant. Respond in plain text only, without any markdown formatting (no bold, italics, bullet points, or numbered lists). Use simple sentences and paragraphs.\n\nUser: ${message}\nAssistant:`;
+      // Simple prompt without system message that might cause example generation
+      prompt = `User: ${message}\nAssistant:`;
     }
 
     // Call watsonx.ai API for text generation
@@ -94,7 +208,8 @@ export async function POST(request) {
         decoding_method: 'greedy',
         max_new_tokens: 200,
         min_new_tokens: 0,
-        repetition_penalty: 1,
+        repetition_penalty: 1.2,
+        stop_sequences: ['\nUser:', 'User:', '\n\nUser:'],
       },
     };
 
@@ -136,9 +251,39 @@ export async function POST(request) {
                          'No response generated';
     
     // Clean up the response, remove markdown formatting and trim whitespace
-    const cleanedText = typeof generatedText === 'string' 
+    let cleanedText = typeof generatedText === 'string' 
       ? generatedText.trim() 
       : String(generatedText).trim();
+    
+    // If the response includes the input prompt, extract only the new generated text
+    // The watsonx API sometimes returns the full prompt + generated text
+    // We need to extract only the part after "Assistant:" marker
+    const assistantIndex = cleanedText.indexOf('Assistant:');
+    if (assistantIndex !== -1) {
+      // Extract only the text after the first "Assistant:" marker
+      cleanedText = cleanedText.substring(assistantIndex + 'Assistant:'.length).trim();
+    }
+    
+    // Remove any remaining system prompt artifacts at the start
+    cleanedText = cleanedText.replace(/^You are a helpful assistant[^]*?Assistant:/i, '').trim();
+    
+    // If the response contains multiple User: Assistant: pairs (example conversations),
+    // extract only the first Assistant response (before the next "User:" appears)
+    // Check for "\nUser:" first (more common pattern)
+    let nextUserIndex = cleanedText.indexOf('\nUser:');
+    if (nextUserIndex === -1) {
+      // Fall back to checking for "User:" not at the start
+      nextUserIndex = cleanedText.indexOf('User:');
+      if (nextUserIndex === 0) {
+        // If "User:" is at the start, it's likely part of the prompt, so ignore it
+        nextUserIndex = -1;
+      }
+    }
+    
+    if (nextUserIndex !== -1 && nextUserIndex > 0) {
+      // If there's a next "User:" marker, extract only up to that point
+      cleanedText = cleanedText.substring(0, nextUserIndex).trim();
+    }
     
     // Strip markdown formatting - remove bold, italics, headers, lists, etc.
     const plainText = cleanedText
@@ -150,7 +295,7 @@ export async function POST(request) {
       .replace(/^\d+\.\s+/gm, '')          // Remove numbered list prefixes (1. item)
       .replace(/^-\s+/gm, '')              // Remove dash list prefixes (- item)
       .replace(/^\*\s+/gm, '')            // Remove markdown bullet points (* item)
-      .replace(/\n{3,}/g, '\n\n')          // Normalize multiple newlines to double (remove later, this might be weird)
+      .replace(/\n{3,}/g, '\n\n')          // Normalize multiple newlines to double
       .replace(/\n\s*\n/g, '\n\n')        // Clean up extra whitespace between paragraphs
       .trim();
 
