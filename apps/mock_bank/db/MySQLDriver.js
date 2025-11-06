@@ -13,12 +13,40 @@ let pool;
  * Ensures only one pool exists.
  */
 if (!global._mysqlPool) {
+  // Validate environment variables
+  const requiredEnvVars = {
+    DB_HOST: process.env.DB_HOST,
+    DB_PORT: process.env.DB_PORT,
+    DB_NAME: process.env.DB_NAME,
+    DB_USER: process.env.DB_USER,
+    DB_PASS: process.env.DB_PASS,
+  };
+
+  const missingVars = Object.entries(requiredEnvVars)
+    .filter(([key, value]) => !value)
+    .map(([key]) => key);
+
+  if (missingVars.length > 0) {
+    console.error("Missing required database environment variables:", missingVars);
+    throw new Error(
+      `Missing required database environment variables: ${missingVars.join(", ")}`
+    );
+  }
+
+  console.log("Creating MySQL pool with config:", {
+    host: requiredEnvVars.DB_HOST,
+    port: Number(requiredEnvVars.DB_PORT),
+    database: requiredEnvVars.DB_NAME,
+    user: requiredEnvVars.DB_USER,
+    password: requiredEnvVars.DB_PASS ? "***" : undefined,
+  });
+
   global._mysqlPool = mysql.createPool({
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    database: process.env.DB_NAME,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
+    host: requiredEnvVars.DB_HOST,
+    port: Number(requiredEnvVars.DB_PORT),
+    database: requiredEnvVars.DB_NAME,
+    user: requiredEnvVars.DB_USER,
+    password: requiredEnvVars.DB_PASS,
     connectionLimit: 10,
     waitForConnections: true,
     queueLimit: 0,
@@ -43,10 +71,18 @@ pool = global._mysqlPool;
  */
 export const executeQuery = async (query, data) => {
   try {
+    if (!pool) {
+      throw new Error("Database pool is not initialized");
+    }
     const [result] = await pool.execute(query, data);
     return result;
   } catch (error) {
     console.error("Query Error:", error.message);
+    console.error("Query:", query);
+    console.error("Data:", data);
+    if (error.code) {
+      console.error("Error Code:", error.code);
+    }
     throw error;
   }
 };

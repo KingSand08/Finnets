@@ -13,9 +13,13 @@ const LoginPage = () => {
         <h1>Login Page</h1>
 
         <Form className={style.form} action={action}>
-          <label htmlFor='name'>Your First Name</label>
-          <input id='name' name='name' placeholder='name...' />
-
+          <label htmlFor='username'>Username</label>
+          <input
+            id='username'
+            name='username'
+            type='text'
+            placeholder='Username...'
+          />
           <label htmlFor='email'>Email</label>
           <input
             id='email'

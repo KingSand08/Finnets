@@ -100,15 +100,18 @@ CREATE TABLE ChatLogs (
 
 INSERT INTO Customers (first_name, last_name, username, password) VALUES
 ('John', 'Doe', 'johndoe', 'password123'),
-('Jane', 'Smith', 'janesmith', 'password123');
+('Jane', 'Smith', 'janesmith', 'password123'),
+('John', 'Pork', 'johnpork', 'iscalling');
 
 INSERT INTO Accounts (account_number, balance, type, cid) VALUES
 ('1234567890', 1000.00, 'checking', 1),
 ('0000000001', 500.00, 'savings', 1),
 ('0000000002', 1500.00, 'checking', 2),
 ('0987654321', 2500.00, 'savings', 2),
-('0000000003', 600.00, 'checking', 1);
+('0000000003', 600.00, 'checking', 1),
+('0000000004', 2000.00, 'checking', 3);
 
 INSERT INTO Emails (email_address, cid) VALUES
-('tuananh.ho@sjsu.edu', 1),
-('pikalot0@gmail.com', 2);
+('john.doe@example.com', 1),
+('jane.smith@example.com', 2),
+('john.pork@example.com', 3);
