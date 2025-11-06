@@ -16,7 +16,8 @@ async function checkIfBankRelatedWithAI(message, accessToken, watsonxUrl, modelI
     const classificationPrompt = `Analyze this message. Should this message be allowed through?
     
 ALLOW (answer "yes"):
-- Banking/financial questions (accounts, transactions, balances, saving, investing, loans, etc.)
+- Banking/financial questions (accounts, transactions, balances, saving money, saving strategies, investing, loans, budgeting, financial planning, etc.)
+- Questions about how to save money, manage finances, or improve financial habits
 - Simple greetings and casual conversation (hello, hi, hey, thanks, etc.)
 - Brief acknowledgments and polite responses
 
@@ -97,6 +98,89 @@ Answer:`;
   }
 }
 
+/**
+ * Generate a rejection message in the user's language
+ * @param {string} message - The user's message (to detect language)
+ * @param {string} accessToken - IAM access token for Watsonx API
+ * @param {string} watsonxUrl - Watsonx API URL
+ * @param {string} modelId - Model ID to use
+ * @param {string} projectId - Project ID (optional)
+ * @param {string} spaceId - Space ID (optional)
+ * @returns {Promise<string>} - Rejection message in the user's language
+ */
+async function generateRejectionMessage(message, accessToken, watsonxUrl, modelId, projectId, spaceId) {
+  try {
+    const rejectionPrompt = `Detect the language of this message and respond in that same language. Then provide a polite rejection message explaining that I'm a banking assistant and can only help with questions related to banking, accounts, transactions, balances, and other financial services. Ask the user to ask one focused banking question at a time about their banking needs.
+
+Message: "${message}"
+
+Respond with only the rejection message in the detected language:`;
+
+    const watsonxEndpoint = `${watsonxUrl}/ml/v1/text/generation?version=2024-03-13`;
+    
+    const requestBody = {
+      model_id: modelId,
+      input: rejectionPrompt,
+      parameters: {
+        decoding_method: 'greedy',
+        max_new_tokens: 100,
+        min_new_tokens: 0,
+        repetition_penalty: 1.2,
+        stop_sequences: ['\n', 'Message:', 'User:', '\n\n'],
+      },
+    };
+
+    if (projectId) {
+      requestBody.project_id = projectId;
+    } else if (spaceId) {
+      requestBody.space_id = spaceId;
+    }
+
+    const watsonxResponse = await fetch(watsonxEndpoint, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!watsonxResponse.ok) {
+      console.error('Watsonx rejection message error:', await watsonxResponse.text());
+      // Fallback to English if generation fails
+      return "I'm a banking assistant and can only help with questions related to banking, accounts, transactions, balances, and other financial services. Please ask me one focused banking question at a time about your banking needs!";
+    }
+
+    const watsonxData = await watsonxResponse.json();
+    const generatedText = watsonxData.results?.[0]?.generated_text || 
+                         watsonxData.results?.[0]?.text ||
+                         watsonxData.generated_text || 
+                         watsonxData.text ||
+                         '';
+
+    // Clean up the response
+    let cleanedText = generatedText.trim();
+    
+    // Remove the prompt if it's included in the response
+    const messageIndex = cleanedText.indexOf('Message:');
+    if (messageIndex !== -1) {
+      cleanedText = cleanedText.substring(0, messageIndex).trim();
+    }
+    
+    // Remove any remaining prompt artifacts
+    const respondIndex = cleanedText.toLowerCase().indexOf('respond with only');
+    if (respondIndex !== -1) {
+      cleanedText = cleanedText.substring(0, respondIndex).trim();
+    }
+
+    return cleanedText || "I'm a banking assistant and can only help with questions related to banking, accounts, transactions, balances, and other financial services. Please ask me one focused banking question at a time about your banking needs!";
+  } catch (error) {
+    console.error('Error generating rejection message:', error);
+    // Fallback to English if generation fails
+    return "I'm a banking assistant and can only help with questions related to banking, accounts, transactions, balances, and other financial services. Please ask me one focused banking question at a time about your banking needs!";
+  }
+}
+
 /** Taken from jupyter notebook
  * POST /api/watsonx
  * Chatbot endpoint for watsonx.ai integration
@@ -171,13 +255,26 @@ export async function POST(request) {
     );
     
     if (!isBankRelated) {
+      // Generate rejection message in the user's language
+      const rejectionMessage = await generateRejectionMessage(
+        message,
+        access_token,
+        watsonxUrl,
+        modelId,
+        projectId,
+        spaceId
+      );
+      
       return NextResponse.json({
         success: true,
-        message: "I'm a banking assistant and can only help with questions related to banking, accounts, transactions, balances, and other financial services. Please ask me one focused banking question at a time about your banking needs!",
+        message: rejectionMessage,
       });
     }
 
     // Build the prompt for chatbot conversation
+    // Add language detection instruction
+    const languageInstruction = `Important: Detect the language the user is speaking and respond in that same language. If the user speaks in Chinese, respond in Chinese. If the user speaks in Spanish, respond in Spanish. If the user speaks in French, respond in French. Match the user's language exactly.\n\n`;
+    
     let prompt;
     
     if (conversationHistory.length > 0) {
@@ -191,10 +288,10 @@ export async function POST(request) {
           }
         })
         .join('\n');
-      prompt = `${historyText}\nUser: ${message}\nAssistant:`;
+      prompt = `${languageInstruction}${historyText}\nUser: ${message}\nAssistant:`;
     } else {
       // Simple prompt without system message that might cause example generation
-      prompt = `User: ${message}\nAssistant:`;
+      prompt = `${languageInstruction}User: ${message}\nAssistant:`;
     }
 
     // Call watsonx.ai API for text generation
