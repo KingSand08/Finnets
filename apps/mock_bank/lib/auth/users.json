@@ -1,0 +1,33 @@
+[
+  {
+    "username": "admin",
+    "email": "admin@example.com",
+    "password": "admin123",
+    "name": "Admin User"
+  },
+  {
+    "username": "john",
+    "email": "john@example.com",
+    "password": "password123",
+    "name": "John Doe"
+  },
+  {
+    "username": "jane",
+    "email": "jane@example.com",
+    "password": "securepass",
+    "name": "Jane Smith"
+  },
+  {
+    "username": "AshandMisty",
+    "email": "kitties@cute.com",
+    "password": "meow",
+    "name": "cats"
+  },
+  {
+    "username": "megaknight",
+    "email": "megaknight@supercell.com",
+    "password": "cringe",
+    "name": "Megaknight"
+  }
+]
+

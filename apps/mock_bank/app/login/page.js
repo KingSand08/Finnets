@@ -22,7 +22,6 @@ const LoginPage = () => {
             name='email'
             type='email'
             placeholder='example@domain.com'
-            disabled={error}
           />
           <label htmlFor='password'>Password</label>
           <input
@@ -30,7 +29,6 @@ const LoginPage = () => {
             name='password'
             type='password'
             placeholder='Password...'
-            disabled={error}
           />
           <button type='submit'>Sign In</button>
         </Form>
@@ -42,8 +40,7 @@ const LoginPage = () => {
         {error && (
           <>
             <div className={style.error}>
-              Sorry, there was an error handling your information, try again
-              later please!
+              No account matched our records. Please try again.
             </div>
           </>
         )}
