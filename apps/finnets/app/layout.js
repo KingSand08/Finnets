@@ -1,5 +1,6 @@
 import { Ubuntu, Ubuntu_Mono } from 'next/font/google';
 import './globals.css';
+import Taskbar from '@/components/Taskbar';
 
 const ubuntu = Ubuntu({
   variable: '--font-ubuntu',
@@ -22,6 +23,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang='en' suppressHydrationWarning>
       <body className={`${ubuntu.variable} ${ubuntuMono.variable}`}>
+        <Taskbar />
         {children}
       </body>
     </html>

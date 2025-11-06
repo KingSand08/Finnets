@@ -9,19 +9,15 @@
   flex-direction: column;
   position: relative;
   height: 100%;
-  padding-top: var(--chat-header-h);
 }
 
 /* Page title header CSS */
 .chat_header {
-  position: fixed;
-  top: 0;
-  left: 2em;
-  right: 2em;
+  position: sticky;
   height: var(--chat-header-h);
   background-color: #f8f8f9;
   z-index: 10;
-  padding: 2em 1em 3.2em 1em;
+  margin-bottom: 1em;
   border-bottom: 1px solid #ccc;
 }
 
