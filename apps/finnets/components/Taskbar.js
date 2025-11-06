@@ -20,7 +20,7 @@ const Taskbar = () => {
         <Link href={'/chat'}>
           <SvgComponent
             src='/icons/chat.svg'
-            title='home'
+            title='Finnets chat'
             fill='#FFFFFF'
             width={50}
             height={50}
@@ -28,10 +28,10 @@ const Taskbar = () => {
           <p>Chat</p>
         </Link>
         {/*//! ADD SETTINGS LATER */}
-        <Link href={'/'}>
+        <Link href={'/settings'}>
           <SvgComponent
             src='/icons/settings.svg'
-            title='home'
+            title='settings'
             fill='#FFFFFF'
             width={50}
             height={50}
