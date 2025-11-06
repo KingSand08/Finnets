@@ -1,0 +1,10 @@
+.button {
+  padding: 0.6em;
+  width: 100%;
+  background-color: red;
+  color: white;
+  font-weight: bold;
+  border-radius: 30;
+  border: 2px solid #d1d1d1;
+  font-family: var(--language-font);
+}

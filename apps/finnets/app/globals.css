@@ -3,6 +3,8 @@
   --foreground: #3a84ff;
   --heading-text-color: #000712;
   --body-text-color: #000712;
+  --button-secondary: #d1d1d1;
+  --language-font: Ubuntu, Inter, Arial, Helvetica, sans-serif;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -31,7 +33,7 @@ body {
 body {
   color: var(--body-text-color);
   background: var(--background);
-  font-family: Ubuntu, Inter, Arial, Helvetica, sans-serif;
+  font-family: var(--language-font);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
