@@ -1,21 +1,18 @@
-import { NextResponse } from 'next/server';
-import {
-  getTotalBalanceByUsername,
-  getBalanceByUsernameAndType,
-} from '../../../../db/queries/getTotalBalance.js';
+import { NextResponse } from 'next/server.js';
+import { getBalanceByAccount } from '../../../../db/queries/getBalanceByAccount.js';
 
 export const GET = async (request) => {
+  console.log('API Route /api/getBalance called.');
   const { searchParams } = new URL(request.url);
   const username = searchParams.get('username');
-  const type = searchParams.get('type');
+  const account_number = searchParams.get('account-number');
 
-  if (!username) {
+  if (!username || !account_number) {
     return NextResponse.json(
-      { error: 'Missing username parameter.' },
+      { error: 'Missing username and account_number parameters.' },
       { status: 400 }
     );
   }
-
   /** Verify the access authorization before execute the query
    *
    * Example codes if we use auth and session
@@ -28,11 +25,9 @@ export const GET = async (request) => {
    *    return NextResponse.json({ message: "Forbidden" }, {status: 403 });
    * }
    * */
-  try {
-    let result;
 
-    if (type) result = await getBalanceByUsernameAndType(username, type);
-    else result = await getTotalBalanceByUsername(username);
+  try {
+    const result = await getBalanceByAccount(username, account_number);
 
     if (!result) {
       return NextResponse.json(
@@ -47,7 +42,7 @@ export const GET = async (request) => {
     return NextResponse.json({ success: true, data: result });
   } catch (error) {
     return NextResponse.json(
-      { error: 'Failed to fetch total balance' },
+      { error: 'Failed to fetch balance.' },
       { status: 500 }
     );
   }
