@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
     <html lang='en' suppressHydrationWarning>
       <body className={`${ubuntu.variable} ${ubuntuMono.variable}`}>
         <Taskbar />
-        {children}
+        <div className='content'>{children}</div>
       </body>
     </html>
   );

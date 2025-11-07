@@ -1,0 +1,32 @@
+:root {
+  --delete-base: rgb(212, 66, 66);
+  --delete-hover: rgb(193, 41, 41);
+  --delete-active: rgb(103, 16, 16);
+}
+
+.button {
+  width: 100%;
+  background-image: linear-gradient(
+    to right,
+    var(--delete-base) 0%,
+    var(--delete-hover) 50%,
+    var(--delete-active) 100%
+  );
+  background-size: 400% 100%;
+  background-position: 0% 0%;
+  transition: background-position 0.3s ease-in-out;
+  color: white;
+  font-weight: bold;
+  padding: 0.6em;
+  border-radius: 30;
+  border: 2px solid #d1d1d1;
+  font-family: var(--language-font);
+}
+
+.button:hover {
+  background-position: 50%;
+}
+
+.button:active {
+  background-position: 100%;
+}

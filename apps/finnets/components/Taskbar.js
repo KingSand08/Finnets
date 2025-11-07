@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import SvgComponent from './SvgComponent';
 import style from './taskbar.module.css';
+import SvgComponent from './SvgComponent';
 
 const Taskbar = () => {
   return (
@@ -8,34 +8,15 @@ const Taskbar = () => {
       <div className={style.taskbar_container} />
       <div className={style.taskbar}>
         <Link href={'/'}>
-          <SvgComponent
-            src='/icons/home.svg'
-            title='home'
-            fill='#FFFFFF'
-            width={50}
-            height={50}
-          />
+          <SvgComponent src='/icons/home.svg' />
           <p>Home</p>
         </Link>
         <Link href={'/chat'}>
-          <SvgComponent
-            src='/icons/chat.svg'
-            title='Finnets chat'
-            fill='#FFFFFF'
-            width={50}
-            height={50}
-          />
+          <SvgComponent src='/icons/chat.svg' />
           <p>Chat</p>
         </Link>
-        {/*//! ADD SETTINGS LATER */}
         <Link href={'/settings'}>
-          <SvgComponent
-            src='/icons/settings.svg'
-            title='settings'
-            fill='#FFFFFF'
-            width={50}
-            height={50}
-          />
+          <SvgComponent src='/icons/settings.svg' />
           <p>Settings</p>
         </Link>
       </div>

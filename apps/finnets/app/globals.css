@@ -3,6 +3,8 @@
   --foreground: #3a84ff;
   --heading-text-color: #000712;
   --body-text-color: #000712;
+  --button-secondary: #d1d1d1;
+  --language-font: Ubuntu, Inter, Arial, Helvetica, sans-serif;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -12,28 +14,34 @@
   }
 } */
 
-html,
-body {
-  max-width: 100vw;
+html {
   height: 100%;
   overflow-x: hidden;
+  overflow-y: visible;
+}
+
+body {
+  max-width: 100vw;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
   padding: 1em 1.4em;
-  background-color: #f8f8f9;
+  color: var(--body-text-color);
+  background: var(--background);
+  font-family: var(--language-font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @media (max-width: 790px) {
-  html,
   body {
     padding: 1em 1em;
   }
 }
 
-body {
-  color: var(--body-text-color);
-  background: var(--background);
-  font-family: Ubuntu, Inter, Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.content {
+  width: 100%;
+  overflow: visible;
 }
 
 h1,
