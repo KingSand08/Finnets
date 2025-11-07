@@ -18,7 +18,7 @@ if (!global._mysqlPool) {
     port: Number(process.env.DB_PORT),
     database: process.env.DB_NAME,
     user: process.env.DB_USER,
-    password: process.env.DB_PASS,
+    password: process.env.DATABASE_PASS,
     connectionLimit: 10,
     waitForConnections: true,
     queueLimit: 0,

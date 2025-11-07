@@ -190,7 +190,7 @@ export async function POST(request) {
   try {
     // Parse request body
     const body = await request.json();
-    const { message, conversationHistory = [] } = body;
+    const { message, conversationHistory = [], context } = body;
 
     // Validate input
     if (!message || typeof message !== 'string') {
@@ -286,9 +286,13 @@ Examples:
 - "hello how are you" → respond in English
 - "bonjour comment allez-vous" → respond in French
 
-Always match the user's language exactly. Do NOT default to English.\n\n`;
+Always match the user's language exactly. Do NOT default to English.
+If customer profile is provided, use that information to analyze and discuss with customer.\n\n`;
     
     let prompt;
+    const systemContext = context
+    ? `${context.trim()}\n\n`
+    : 'You are a banking assistant. No customer data available.\n\n';
     
     if (conversationHistory.length > 0) {
       // Include conversation history if provided
@@ -301,10 +305,14 @@ Always match the user's language exactly. Do NOT default to English.\n\n`;
           }
         })
         .join('\n');
-      prompt = `${languageInstruction}${historyText}\nUser: ${message}\nAssistant:`;
+      prompt = `${languageInstruction}
+      \n${systemContext}
+      \n${historyText}\nUser: ${message}\nAssistant:`;
     } else {
       // Simple prompt with system context
-      prompt = `${languageInstruction}User: ${message}\nAssistant:`;
+      prompt = `${languageInstruction}
+      \n${systemContext}
+      \nUser: ${message}\nAssistant:`;
     }
 
     // Call watsonx.ai API for text generation

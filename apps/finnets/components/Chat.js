@@ -3,9 +3,10 @@ import style from '@/components/chat.module.css';
 import Image from 'next/image';
 import { useState, useRef } from 'react';
 
-export default function Chat({ initial_messages }) {
+export default function Chat({ initial_messages, cust_context }) {
   const [messages, setMessages] = useState(initial_messages);
   const inputRef = useRef(null);
+  const [context, setContext] = useState(cust_context);
 
   const [sendStatus, setSendStatus] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -15,12 +16,13 @@ export default function Chat({ initial_messages }) {
     setMessages((prev) => [...prev, [text, isRecieve]]);
   };
 
-  const SendChatPrompt = async (userText) => {
+  const SendChatPrompt = async (userText, context) => {
     var data = await fetch('/api/watsonx', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        message: userText,
+        message: userText, 
+        context,
       }),
     })
       .then((r) => r.json())
@@ -44,7 +46,7 @@ export default function Chat({ initial_messages }) {
     setIsLoading(true);
     addNewMessage(text, true);
     inputRef.current.value = '';
-    await SendChatPrompt(text);
+    await SendChatPrompt(text, context);
   };
 
   const handleKeyDown = (e) => {
