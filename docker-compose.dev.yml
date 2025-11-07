@@ -23,8 +23,8 @@ services:
       - APP_NAME=finnets
       - NODE_ENV=development
     ports:
-      #   - "3001:3000"
-      - "3000"
+      - "3001:3000"
+      # - "3000"
     depends_on:
       - mock_bank_database
     volumes:
@@ -56,8 +56,8 @@ services:
       - DB_USER=root
       - DB_PASS=${DATABASE_PASS}
     ports:
-      # - "3000:3000"
-      - "3000"
+      - "3000:3000"
+      # - "3000"
     depends_on:
       - mock_bank_database
     volumes:
