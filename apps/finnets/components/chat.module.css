@@ -9,25 +9,50 @@
   flex-direction: column;
   position: relative;
   height: 100%;
+  overflow: hidden;
 }
 
 /* Page title header CSS */
 .chat_header {
   position: sticky;
+  top: 0;
   height: var(--chat-header-h);
   background-color: #f8f8f9;
   z-index: 10;
   margin-bottom: 1em;
   border-bottom: 1px solid #ccc;
+  flex-shrink: 0;
+}
+
+/* Wrapper for message section and input */
+.chat_page > div:last-child {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ensure input section doesn't take up space in flex layout */
+.chat_page > div:last-child > .input_section {
+  position: fixed;
+  flex-shrink: 0;
+  flex-grow: 0;
 }
 
 /* Message Box Container */
 .message_section {
-  padding: 0 0 9em 0;
-  position: absolute;
+  padding: 0 0 10em 0;
   width: 100%;
   display: flex;
   flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  position: relative;
+  z-index: 1;
 }
 
 /* General Message CSS */
@@ -109,18 +134,21 @@
 /* Input bar outter area */
 .input_section {
   position: fixed;
-  bottom: 3.5em;
-  left: 2em;
-  right: 2em;
+  bottom: 0;
+  left: 0;
+  right: 0;
   height: var(--chat-input-h);
   background-color: #f8f8f9;
   display: flex;
   gap: 1em;
   align-items: center;
   padding: 1.25em;
-  padding-top: 4em;
+  padding-top: 1.5em;
+  padding-left: 1.4em;
+  padding-right: 1.4em;
   border-top: 1px solid #ccc;
   box-sizing: border-box;
+  z-index: 100;
 }
 
 /* User Message Send Button */
