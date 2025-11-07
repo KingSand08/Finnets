@@ -6,6 +6,13 @@
   position: fixed;
   right: 5em;
   bottom: 5em;
+  width: 99px;
+  height: 99px;
+}
+
+.chat_button img {
+  width: 100px;
+  height: 100px;
 }
 
 .chat_button:hover {
