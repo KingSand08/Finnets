@@ -6,6 +6,8 @@
 
   --background-selected: #adadad;
   --foreground-selected: #4b32d9;
+
+  --language-font: Ubuntu, Inter, Arial, Helvetica, sans-serif;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -21,6 +23,7 @@ body {
   height: 100%;
   overflow-x: hidden;
   padding: 1em 1.4em;
+  font-family: var(--language-font);
 }
 
 @media (max-width: 790px) {
@@ -56,6 +59,8 @@ h6 {
 a {
   color: inherit;
   text-decoration: none;
+  font-size: large;
+  font-family: var(--language-font);
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -71,6 +76,8 @@ button {
   border-radius: 120;
   border: none;
   cursor: pointer;
+  font-size: large;
+  font-family: var(--language-font);
 }
 
 button:hover {
@@ -87,6 +94,7 @@ button:active {
 form {
   display: flex;
   flex-direction: column;
+  font-family: var(--language-font);
 }
 
 form label ~ * {
@@ -97,6 +105,7 @@ form input {
   padding: 1em 1.2em;
   border-radius: 20;
   border: 2px solid #13007d;
+  font-family: var(--language-font);
 }
 
 form input:focus {
