@@ -5,7 +5,7 @@ set +a
 
 docker exec -it mock_bank_database mysql -uroot -p"$DATABASE_PASS" -e "
     USE Finnets;
-    SELECT a.aid, c.cid, c.first_name, c.last_name, a.account_number, a.balance, a.type, e.email_address
+    SELECT a.aid, c.cid, c.first_name, c.last_name, a.account_number, a.balance, a.type, e.email_address, c.username
     FROM Accounts AS a
     JOIN Customers AS c
         ON a.cid=c.cid
