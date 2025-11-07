@@ -8,7 +8,7 @@
 .taskbar_container {
   position: relative;
   height: calc(var(--taskbar-container-offset) + var(--taskbar-size-h));
-  margin-bottom: calc(2em + var(--taskbar-size-h));
+  margin-bottom: calc(3em + var(--taskbar-size-h));
 }
 
 .taskbar {
