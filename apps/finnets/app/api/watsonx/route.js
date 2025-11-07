@@ -272,8 +272,21 @@ export async function POST(request) {
     }
 
     // Build the prompt for chatbot conversation
-    // Add language detection instruction
-    const languageInstruction = `Important: Detect the language the user is speaking and respond in that same language. If the user speaks in Chinese, respond in Chinese. If the user speaks in Spanish, respond in Spanish. If the user speaks in French, respond in French. Match the user's language exactly.\n\n`;
+    // Add language detection instruction and system context
+    const languageInstruction = `You are a helpful banking assistant. CRITICAL: Detect the language the user is speaking and respond in that EXACT same language. 
+
+Language detection rules:
+- If the user writes in Spanish (e.g., "hola", "como estas", "buenos dias", "gracias", etc.), respond in Spanish.
+- If the user writes in Chinese characters, respond in Chinese.
+- If the user writes in French (e.g., "bonjour", "comment allez-vous", etc.), respond in French.
+- If the user writes in English (including slang like "wassup", "wussup", "wuttup", "hey", "hi", "hello", etc.), respond in English.
+
+Examples:
+- "hola como estas" → respond in Spanish
+- "hello how are you" → respond in English
+- "bonjour comment allez-vous" → respond in French
+
+Always match the user's language exactly. Do NOT default to English.\n\n`;
     
     let prompt;
     
@@ -290,7 +303,7 @@ export async function POST(request) {
         .join('\n');
       prompt = `${languageInstruction}${historyText}\nUser: ${message}\nAssistant:`;
     } else {
-      // Simple prompt without system message that might cause example generation
+      // Simple prompt with system context
       prompt = `${languageInstruction}User: ${message}\nAssistant:`;
     }
 
@@ -304,7 +317,7 @@ export async function POST(request) {
       parameters: {
         decoding_method: 'greedy',
         max_new_tokens: 200,
-        min_new_tokens: 0,
+        min_new_tokens: 1,  // Require at least 1 token to be generated
         repetition_penalty: 1.2,
         stop_sequences: ['\nUser:', 'User:', '\n\nUser:'],
       },
@@ -339,13 +352,27 @@ export async function POST(request) {
     // remove in production, this be for debugging
     console.log('Watsonx API response:', JSON.stringify(watsonxData, null, 2));
 
-    // Extracting generated text from the response
-    const generatedText = watsonxData.results?.[0]?.generated_text || 
-                         watsonxData.results?.[0]?.text ||
-                         watsonxData.generated_text || 
-                         watsonxData.text ||
-                         (typeof watsonxData.results?.[0] === 'string' ? watsonxData.results[0] : null) ||
-                         'No response generated';
+    // Extracting generated text from the response - try multiple possible structures
+    let generatedText = null;
+    
+    // Try different response structures
+    if (watsonxData.results && Array.isArray(watsonxData.results) && watsonxData.results.length > 0) {
+      const firstResult = watsonxData.results[0];
+      generatedText = firstResult.generated_text || firstResult.text || 
+                     (typeof firstResult === 'string' ? firstResult : null);
+    }
+    
+    // Fallback to top-level properties
+    if (!generatedText) {
+      generatedText = watsonxData.generated_text || watsonxData.text || 
+                     watsonxData.response || watsonxData.output;
+    }
+    
+    // If still no text found, log the structure for debugging
+    if (!generatedText || (typeof generatedText === 'string' && generatedText.trim() === '')) {
+      console.error('No generated text found in watsonx response. Structure:', Object.keys(watsonxData));
+      generatedText = 'No response generated';
+    }
     
     // Clean up the response, remove markdown formatting and trim whitespace
     let cleanedText = typeof generatedText === 'string' 
@@ -383,7 +410,7 @@ export async function POST(request) {
     }
     
     // Strip markdown formatting - remove bold, italics, headers, lists, etc.
-    const plainText = cleanedText
+    let plainText = cleanedText
       .replace(/\*\*(.*?)\*\*/g, '$1')     // Remove bold **text**
       .replace(/\*(.*?)\*/g, '$1')         // Remove italic *text*
       .replace(/_(.*?)_/g, '$1')           // Remove underline _text_
@@ -395,6 +422,35 @@ export async function POST(request) {
       .replace(/\n{3,}/g, '\n\n')          // Normalize multiple newlines to double
       .replace(/\n\s*\n/g, '\n\n')        // Clean up extra whitespace between paragraphs
       .trim();
+    
+    // Remove example conversation markers and similar artifacts
+    // First, remove everything after "[Example conversation]" or similar markers
+    const exampleIndex = plainText.search(/\[Example/i);
+    if (exampleIndex !== -1) {
+      plainText = plainText.substring(0, exampleIndex).trim();
+    }
+    
+    // Also remove standalone example markers that might appear
+    plainText = plainText
+      .replace(/\s*\[Example conversation\]/gi, '')  // Remove [Example conversation]
+      .replace(/\s*\[Example\]/gi, '')                // Remove [Example]
+      .replace(/\s*\[Examples?\]/gi, '')               // Remove [Examples] or [Example]
+      .replace(/\s*Example conversation:?/gi, '')      // Remove "Example conversation:" text
+      .replace(/\s*Example:?/gi, '')                   // Remove "Example:" text
+      .trim();
+
+    // If after all cleaning the text is empty, use the original generated text or a fallback
+    if (!plainText || plainText === '' || plainText === 'No response generated') {
+      console.warn('Response was empty after cleaning. Original generatedText:', generatedText);
+      // Try to use the original cleaned text before markdown stripping
+      if (cleanedText && cleanedText.trim() !== '') {
+        plainText = cleanedText.trim();
+      } else if (generatedText && generatedText !== 'No response generated') {
+        plainText = String(generatedText).trim();
+      } else {
+        plainText = "I'm sorry, I didn't understand that. Could you please rephrase your question?";
+      }
+    }
 
     return NextResponse.json({
       success: true,
