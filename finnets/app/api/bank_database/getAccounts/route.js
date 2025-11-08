@@ -1,14 +1,15 @@
-import { NextResponse } from 'next/server.js';
-import { getBalanceByAccount } from '@/db/queries/getBalanceByAccount.js';
+import { NextResponse } from 'next/server';
+import { getAccounts } from '@/db/queries/getAccounts';
 
 export const GET = async (request) => {
+  console.log('I GET HERE SOMEHOW');
+
   const { searchParams } = new URL(request.url);
   const username = searchParams.get('username');
-  const account_number = searchParams.get('account-number');
 
-  if (!username || !account_number) {
+  if (!username) {
     return NextResponse.json(
-      { error: 'Missing username and account_number parameters.' },
+      { error: 'Missing username parameter.' },
       { status: 400 }
     );
   }
@@ -26,7 +27,7 @@ export const GET = async (request) => {
    * */
 
   try {
-    const result = await getBalanceByAccount(username, account_number);
+    const result = await getAccounts(username);
 
     if (!result) {
       return NextResponse.json(

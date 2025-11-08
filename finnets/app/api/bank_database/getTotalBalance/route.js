@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server.js';
 import {
   getTotalBalanceByUsername,
   getBalanceByUsernameAndType,
-} from '../../../../db/queries/getTotalBalance.js';
+} from '@/db/queries/getTotalBalance.js';
 
 export const GET = async (request) => {
   const { searchParams } = new URL(request.url);
@@ -21,11 +21,11 @@ export const GET = async (request) => {
    * Example codes if we use auth and session
    * const session = await getServerSession(authOptions);
    * if (!session) {
-   *    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+   *    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
    * }
    *
-   * if (session.user.username !== new URL(request.url).get("username") {
-   *    return NextResponse.json({ message: "Forbidden" }, {status: 403 });
+   * if (session.user.username !== new URL(request.url).get('username') {
+   *    return NextResponse.json({ message: 'Forbidden' }, {status: 403 });
    * }
    * */
   try {
