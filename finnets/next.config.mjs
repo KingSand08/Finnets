@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  basePath: '/finnets',
-  assetPrefix: '/finnets/',
+  assetPrefix: '/finnets',
   reactCompiler: true,
   output: 'standalone',
 };

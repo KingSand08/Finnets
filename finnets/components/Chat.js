@@ -1,6 +1,5 @@
 'use client';
 import style from '@/components/chat.module.css';
-import Image from 'next/image';
 import { useState, useRef } from 'react';
 
 export default function Chat({ initial_messages, cust_context }) {
@@ -17,25 +16,40 @@ export default function Chat({ initial_messages, cust_context }) {
   };
 
   const SendChatPrompt = async (userText, context) => {
-    var data = await fetch('/api/watsonx', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: userText, 
-        context,
-      }),
-    })
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.success) {
-          addNewMessage(data.message, false);
-          setSendStatus(false);
-          setIsLoading(false);
-        } else {
-          setIsLoading(false);
-          setIsError(true);
-        }
+    try {
+      const response = await fetch('/finnets/api/watsonx', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: userText, 
+          context,
+        }),
       });
+
+      if (!response.ok) {
+        console.error('API error:', response.status, response.statusText);
+        setIsLoading(false);
+        setIsError(true);
+        setSendStatus(false);
+        return;
+      }
+
+      const data = await response.json();
+      if (data.success) {
+        addNewMessage(data.message, false);
+        setSendStatus(false);
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
+        setIsError(true);
+        setSendStatus(false);
+      }
+    } catch (error) {
+      console.error('Fetch error:', error);
+      setIsLoading(false);
+      setIsError(true);
+      setSendStatus(false);
+    }
   };
 
   const handleSend = async () => {
@@ -101,11 +115,10 @@ export default function Chat({ initial_messages, cust_context }) {
             disabled={sendStatus}
           >
             <div>
-              <Image
+              <img
                 src='/icons/send-button.png'
                 alt='send button'
-                fill
-                style={{ objectFit: 'cover' }}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
             </div>
           </button>

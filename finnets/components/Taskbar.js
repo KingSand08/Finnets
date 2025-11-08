@@ -7,15 +7,15 @@ const Taskbar = () => {
     <>
       <div className={style.taskbar_container} />
       <div className={style.taskbar}>
-        <Link href={'/'}>
+        <a href="/finnets/">
           <SvgComponent src='/icons/home.svg' />
           <p>Home</p>
-        </Link>
-        <Link href={'/chat'}>
+        </a>
+        <Link href={'/finnets/chat'}>
           <SvgComponent src='/icons/chat.svg' />
           <p>Chat</p>
         </Link>
-        <Link href={'/settings'}>
+        <Link href={'/finnets/settings'}>
           <SvgComponent src='/icons/settings.svg' />
           <p>Settings</p>
         </Link>
