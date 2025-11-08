@@ -21,9 +21,9 @@ RUN \
 # Copy *all* source code (for dev container to have latest files)
 COPY . .
 
-EXPOSE 3000
+EXPOSE 3001
 
-ENV PORT=3000
+ENV PORT=3001
 ENV HOSTNAME="0.0.0.0"
 
 # Default command for dev mode

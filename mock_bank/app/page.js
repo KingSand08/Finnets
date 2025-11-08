@@ -1,5 +1,4 @@
 'use server';
-import Image from 'next/image';
 import Link from 'next/link';
 import styles from './page.module.css';
 import { getSession } from '@/lib/auth/getSession';
@@ -8,9 +7,10 @@ import ChatBotButton from '@/components/buttons/ChatbotButton';
 
 export default async function Home() {
   const session = await getSession();
-
+  // const chatbotUrl = process.env.FINNETS_URL;
+  const chatbotUrl = '/finnets/';
   return (
-    <div>
+    <>
       <main className={styles.main}>
         <h1>Welcome to BanksRntUs</h1>
         {!session && (
@@ -21,10 +21,10 @@ export default async function Home() {
         {session && (
           <>
             <LogoutButton />
-            <ChatBotButton />
           </>
         )}
       </main>
-    </div>
+      {session && <ChatBotButton src={chatbotUrl} />}
+    </>
   );
 }
