@@ -2,10 +2,12 @@
 import style from '@/components/chat.module.css';
 import { useState, useRef } from 'react';
 
-export default function Chat({ initial_messages, cust_context }) {
+export default function Chat({ initial_messages, username = null }) {
   const [messages, setMessages] = useState(initial_messages);
   const inputRef = useRef(null);
-  const [context, setContext] = useState(cust_context);
+  
+  // Store username for API calls (auth via session cookie)
+  const usernameRef = useRef(username);
 
   const [sendStatus, setSendStatus] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -15,9 +17,116 @@ export default function Chat({ initial_messages, cust_context }) {
     setMessages((prev) => [...prev, [text, isRecieve]]);
   };
 
-  const SendChatPrompt = async (userText, context) => {
+  const SendChatPrompt = async (userText) => {
     try {
-      const response = await fetch('/finnets/api/watsonx', {
+      
+      const basePath = typeof window !== 'undefined' && window.location.pathname.startsWith('/finnets/')
+        ? '/finnets'
+        : '';
+      
+      
+      let context = '';
+      
+      if (usernameRef.current) {
+        // Fetch fresh banking data for each message
+        try {
+          const accountsRes = await fetch(`${basePath}/api/bank_database/getAccounts?username=${usernameRef.current}`, {
+            credentials: 'include'
+          });
+
+          if (!accountsRes.ok) {
+            throw new Error('Failed to fetch accounts');
+          }
+
+          const accounts = await accountsRes.json();
+          
+          if (!accounts?.data || !Array.isArray(accounts.data) || accounts.data.length === 0) {
+            context = 'You are a banking assistant. No accounts found for this customer.';
+          } else {
+            const accountTypes = new Set(accounts.data.map(acc => acc.account_type));
+            const hasChecking = accountTypes.has('checking');
+            const hasSavings = accountTypes.has('savings');
+
+            const fetchPromises = [
+              fetch(`${basePath}/api/bank_database/getTotalBalance?username=${usernameRef.current}`, {
+                credentials: 'include'
+              })
+            ];
+
+            if (hasChecking) {
+              fetchPromises.push(
+                fetch(`${basePath}/api/bank_database/getTotalBalance?username=${usernameRef.current}&type=checking`, {
+                  credentials: 'include'
+                })
+              );
+            }
+
+            if (hasSavings) {
+              fetchPromises.push(
+                fetch(`${basePath}/api/bank_database/getTotalBalance?username=${usernameRef.current}&type=savings`, {
+                  credentials: 'include'
+                })
+              );
+            }
+
+            const balanceResponses = await Promise.allSettled(fetchPromises);
+
+            // Handle responses
+            const totalBal = balanceResponses[0].status === 'fulfilled' && balanceResponses[0].value.ok
+              ? await balanceResponses[0].value.json()
+              : null;
+
+            let checkingBal = null;
+            let savingsBal = null;
+            let responseIndex = 1;
+
+            if (hasChecking) {
+              checkingBal = balanceResponses[responseIndex].status === 'fulfilled' && balanceResponses[responseIndex].value.ok
+                ? await balanceResponses[responseIndex].value.json()
+                : null;
+              responseIndex++;
+            }
+
+            if (hasSavings) {
+              savingsBal = balanceResponses[responseIndex].status === 'fulfilled' && balanceResponses[responseIndex].value.ok
+                ? await balanceResponses[responseIndex].value.json()
+                : null;
+            }
+
+            // Calculate balances from accounts if API calls failed
+            const checkingBalance = checkingBal?.data?.total_balance ?? 
+              (accounts.data.filter(acc => acc.account_type === 'checking').reduce((sum, acc) => sum + parseFloat(acc.balance), 0) ?? 'Unavailable');
+            const savingsBalance = savingsBal?.data?.total_balance ?? 
+              (accounts.data.filter(acc => acc.account_type === 'savings').reduce((sum, acc) => sum + parseFloat(acc.balance), 0) ?? 'None');
+
+            const accountDetails = accounts.data
+              .map(acc => `\n• [${acc.account_type.toUpperCase()}] Account #${acc.account_number}: $${acc.balance}`)
+              .join('\n');
+
+            context = `
+            Customer profile:
+            - First Name: ${totalBal?.data?.first_name ?? 'Unknown'}
+            - Last Name: ${totalBal?.data?.last_name ?? 'Unknown'}
+            - Username: ${usernameRef.current}
+            - Total Balance: $${totalBal?.data?.total_balance ?? accounts.data.reduce((sum, acc) => sum + parseFloat(acc.balance), 0) ?? '0.00'}
+            - Checking Balance: ${checkingBalance}
+            - Savings Balance: ${savingsBalance}
+
+            Accounts: 
+            ${accountDetails}
+
+            You are the customer's personal banking assistant. Always keep their data confidential and use it only to answer banking-related questions.
+            `;
+          }
+        } catch (err) {
+          console.error('Error fetching banking data:', err);
+          context = 'You are a banking assistant. Unable to fetch customer data at this time.';
+        }
+      } else {
+        context = 'You are a banking assistant. No customer authentication available.';
+      }
+
+      const response = await fetch(`${basePath}/api/watsonx`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -60,7 +169,7 @@ export default function Chat({ initial_messages, cust_context }) {
     setIsLoading(true);
     addNewMessage(text, true);
     inputRef.current.value = '';
-    await SendChatPrompt(text, context);
+    await SendChatPrompt(text);
   };
 
   const handleKeyDown = (e) => {

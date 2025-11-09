@@ -14,6 +14,8 @@ export async function updateSession(request) {
     value: await jwtEncrypt(parsed),
     httpOnly: true,
     expires: parsed.expires,
+    sameSite: 'none',
+    secure: true, // Required for SameSite=None (browsers allow on localhost)
   });
   return res;
 }

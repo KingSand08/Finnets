@@ -1,4 +1,4 @@
-import { executeQuery } from "../MySQLDriver";
+import { executeQuery } from '@/db/MySQLDriver';
 
 export const getBalanceByAccount = async (username, account_number) => {
   const query = `
@@ -12,3 +12,4 @@ export const getBalanceByAccount = async (username, account_number) => {
   const result = await executeQuery(query, [username, account_number]);
   return result[0] || null;
 };
+

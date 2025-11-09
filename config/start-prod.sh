@@ -12,3 +12,4 @@ else
   docker compose --env-file ../.env -f ../docker-compose.prod.yml up --build -d
   echo "Created prod demo"
 fi
+

@@ -6,7 +6,7 @@ import {
   SettingSwitchControl,
 } from '@/components/Settings/SettingControl';
 import SettingControlSection from '@/components/Settings/SettingControlSection';
-import fontList from '@/db/static/fontSupport.json';
+import fontList from '@/lib/fontSupport.json';
 import style from './settingspage.module.css';
 import { doNothingTemp } from '@/lib/doNothing';
 

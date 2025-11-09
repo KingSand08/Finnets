@@ -34,7 +34,18 @@ export default async function signIn(previousState, formData) {
   const session = await jwtEncrypt({ user: userData, expires });
 
   const cookieStore = await cookies();
-  cookieStore.set('session', session, { expires, httpOnly: true, path: '/' });
+  
+  // Set cookie with proper settings for cross-origin iframe access
+  // Note: SameSite=None requires Secure flag, but browsers allow it on localhost for dev
+  const cookieOptions = {
+    expires,
+    httpOnly: true,
+    path: '/',
+    sameSite: 'none', // Allow cross-origin iframe access
+    secure: true, // Required for SameSite=None (browsers allow on localhost)
+  };
+  
+  cookieStore.set('session', session, cookieOptions);
   redirect('/');
   return '';
 }

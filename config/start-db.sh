@@ -12,3 +12,4 @@ else
   docker compose --env-file ../.env -f ../docker-compose.db.yml up --build -d
   echo "Created bank db"
 fi
+

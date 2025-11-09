@@ -10,23 +10,24 @@ async function welcomeMessage(params) {
   // if (username != login.session.username)
   if (!username) redirect('/chat');
 
-  const baseUrl = process.env.DATACENTER_API_URL || 'localhost:3001';
+  // Call the bank's API instead of direct database access
+  const bankApiUrl = process.env.BANK_API_URL || 'http://localhost:3000';
 
   try {
     const res = await fetch(
-      `${baseUrl}/api/bank_database/getTotalBalance?username=${username}`
+      `${bankApiUrl}/api/bank/total-balance?username=${username}`
     );
     if (res.ok) privateData = await res.json();
     const ckRes = await fetch(
-      `${baseUrl}/api/bank_database/getTotalBalance?username=${username}&type=checking`
+      `${bankApiUrl}/api/bank/total-balance?username=${username}&type=checking`
     );
     if (ckRes.ok) checkingBal = await ckRes.json();
     const svRes = await fetch(
-      `${baseUrl}/api/bank_database/getTotalBalance?username=${username}&type=savings`
+      `${bankApiUrl}/api/bank/total-balance?username=${username}&type=savings`
     );
     if (svRes.ok) savingsBal = await svRes.json();
     const accRes = await fetch(
-      `${baseUrl}/api/bank_database/getAccounts?username=${username}`
+      `${bankApiUrl}/api/bank/accounts?username=${username}`
     );
     if (accRes.ok) accounts = await accRes.json();
 
