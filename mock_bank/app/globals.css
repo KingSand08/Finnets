@@ -8,6 +8,8 @@
   --foreground-selected: #4b32d9;
 
   --language-font: Ubuntu, Inter, Arial, Helvetica, sans-serif;
+
+  --ai-color: #3a84ff;
 }
 
 /* @media (prefers-color-scheme: dark) {

@@ -1,13 +1,10 @@
 'use client';
 import { useEffect, useRef } from 'react';
-import styles from './finnetmodal.module.css';
+import style from './finnetmodal.module.css';
+import IframeContainer from './IframeContainer';
+import ImageContainer from './ImageContainer';
 
-export default function FinnetsModal({
-  srcFrame,
-  open,
-  onClose,
-  title = 'Chatbot',
-}) {
+export default function FinnetsModal({ srcFrame, open, onClose, titleFrame }) {
   const closeRef = useRef(null);
   const openerRef = useRef(null);
 
@@ -20,7 +17,6 @@ export default function FinnetsModal({
       document.body.style.overflow = '';
       openerRef.current?.focus?.();
     }
-
     return () => {
       document.body.style.overflow = '';
     };
@@ -38,50 +34,23 @@ export default function FinnetsModal({
 
   return (
     <>
-      <div className={styles.backdrop} onClick={onClose} />
-
+      <div className={style.backdrop} onClick={onClose} />
       <aside
-        className={`${styles.modal} ${open ? styles.modalActive : ''}`}
+        className={`${style.modal} ${open ? style.modalActive : ''}`}
         role='dialog'
         aria-modal='true'
       >
-        <div className='h-full flex flex-col'>
-          {/* HEADER */}
-          <div className={styles.header}>
-            <div className={styles.headerLeft}>
-              <button
-                ref={closeRef}
-                onClick={onClose}
-                className={styles.closeButton}
-                aria-label='Close'
-              >
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='h-5 w-5 text-gray-700'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  stroke='currentColor'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    d='M15 19l-7-7 7-7'
-                  />
-                </svg>
-              </button>
-            </div>
-            <div className={styles.powered}>Powered by Finnets</div>
-          </div>
-
-          {/* IFRAME */}
-          <iframe
-            title='Finnets Chatbot'
-            src={srcFrame}
-            sandbox='allow-scripts allow-same-origin allow-forms allow-popups'
-            className={styles.iframe}
-          />
+        <div className={style.close_button_container}>
+          <button
+            ref={closeRef}
+            className={style.close_button}
+            onClick={onClose}
+            aria-label='Close'
+          >
+            <ImageContainer srcImg='/icons/back.png' alt='back button' w='40' />
+          </button>
         </div>
+        <IframeContainer key={srcFrame} src={srcFrame} title={titleFrame} />
       </aside>
     </>
   );

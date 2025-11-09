@@ -7,8 +7,10 @@ import ChatBotButton from '@/components/buttons/ChatbotButton';
 
 export default async function Home() {
   const session = await getSession();
-  // const chatbotUrl = process.env.FINNETS_URL;
-  const chatbotUrl = '/finnets/';
+  const chatbotUrl =
+    process.env.NODE_ENV === 'production'
+      ? '/finnets/'
+      : 'http://localhost:3001';
   return (
     <>
       <main className={styles.main}>
@@ -24,7 +26,13 @@ export default async function Home() {
           </>
         )}
       </main>
-      {session && <ChatBotButton src={chatbotUrl} />}
+      {session && (
+        <ChatBotButton
+          btnSrcImg='/finnets/finnets.png'
+          src={chatbotUrl}
+          title='Finnets Chatbot'
+        />
+      )}
     </>
   );
 }

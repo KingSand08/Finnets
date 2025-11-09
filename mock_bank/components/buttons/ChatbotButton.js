@@ -4,7 +4,7 @@ import ImageContainer from '../ImageContainer';
 import style from './chatbotButton.module.css';
 import FinnetsModal from '../FinnetModal';
 
-const ChatBotButton = ({ src }) => {
+const ChatBotButton = ({ btnSrcImg, src, title }) => {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -12,14 +12,14 @@ const ChatBotButton = ({ src }) => {
         className={style.chat_button}
         onClick={() => setOpen((prev) => !prev)}
       >
-        <ImageContainer srcImg='/finnets.png' alt='FinNets Companion Tool' />
+        <ImageContainer srcImg={btnSrcImg} alt='FinNets Companion Tool' />
       </button>
 
       <FinnetsModal
         srcFrame={src}
         open={open}
         onClose={() => setOpen(false)}
-        title='Finnets Chatbot'
+        title={title}
       />
     </>
   );
