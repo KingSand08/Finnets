@@ -1,10 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-# Purge containers + images for THIS project only (db, dev, prod).
-# Relies on your three compose files and project names.
-# Uses --rmi all to delete images used by these services, and --volumes to drop their named volumes.
-
 COMPOSE_DIR="${COMPOSE_DIR:-..}"
 
 echo "==> Stopping & removing DB stack (containers/images/volumes)…"
@@ -23,4 +19,4 @@ docker image prune -f || true
 echo "==> Removing project networks…"
 ./remove-nets.sh || true
 
-echo "✅ Project containers/images/volumes removed."
+echo "Project containers/images/volumes removed."
