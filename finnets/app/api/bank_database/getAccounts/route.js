@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
-import { getAccounts } from '@/db/queries/getAccounts';
 
-export const GET = async (request) => {
-  console.log('I GET HERE SOMEHOW');
-
+/**
+ * Proxy endpoint to get accounts from mock_bank
+ * GET /api/bank_database/getAccounts?username=john
+ */
+export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const username = searchParams.get('username');
 
@@ -13,37 +14,42 @@ export const GET = async (request) => {
       { status: 400 }
     );
   }
-  /** Verify the access authorization before execute the query
-   *
-   * Example codes if we use auth and session
-   * const session = await getServerSession(authOptions);
-   * if (!session) {
-   *    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-   * }
-   *
-   * if (session.user.username !== new URL(request.url).get("username") {
-   *    return NextResponse.json({ message: "Forbidden" }, {status: 403 });
-   * }
-   * */
 
   try {
-    const result = await getAccounts(username);
+    const bankApiUrl = process.env.BANK_API_URL;
+    
+    // Forward cookies from client request to mock_bank
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    
+    const cookieHeader = request.headers.get('cookie');
+    if (cookieHeader) {
+      headers['Cookie'] = cookieHeader;
+    }
+    
+    const response = await fetch(
+      `${bankApiUrl}/api/bank/accounts?username=${username}`,
+      {
+        cache: 'no-store',
+        headers,
+        credentials: 'include',
+      }
+    );
 
-    if (!result) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'No account found for the given username.',
-        },
-        { status: 404 }
-      );
+    if (!response.ok) {
+      const errorData = await response.json();
+      return NextResponse.json(errorData, { status: response.status });
     }
 
-    return NextResponse.json({ success: true, data: result });
+    const data = await response.json();
+    return NextResponse.json(data);
   } catch (error) {
+    console.error('Error proxying accounts request:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch balance.' },
+      { error: 'Failed to fetch accounts.' },
       { status: 500 }
     );
   }
-};
+}
+

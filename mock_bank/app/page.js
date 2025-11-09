@@ -7,10 +7,12 @@ import ChatBotButton from '@/components/buttons/ChatbotButton';
 
 export default async function Home() {
   const session = await getSession();
-  const chatbotUrl =
-    process.env.NODE_ENV === 'production'
-      ? '/finnets/'
-      : 'http://localhost:3001';
+  
+  // Build chatbot URL - session cookie is sent automatically with SameSite=None
+  let chatbotUrl = process.env.NODE_ENV === 'production'
+    ? '/finnets/'
+    : 'http://localhost:3001/';
+  
   return (
     <>
       <main className={styles.main}>

@@ -11,3 +11,4 @@ else
   echo "Created bank_shared_net"
   docker compose --env-file ../.env -f ../docker-compose.dev.yml up --build  -d
 fi
+

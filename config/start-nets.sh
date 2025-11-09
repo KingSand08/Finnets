@@ -21,3 +21,4 @@ else
   docker network create bank_prod_net >/dev/null
   echo "Created bank_prod_net"
 fi
+

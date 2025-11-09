@@ -12,3 +12,4 @@ export const getAccounts = async (username) => {
   const result = await executeQuery(query, [username]);
   return result || null;
 };
+

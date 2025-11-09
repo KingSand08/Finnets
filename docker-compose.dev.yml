@@ -10,12 +10,12 @@ services:
     environment:
       - APP_NAME=finnets
       - NODE_ENV=development
+      - BANK_API_URL=http://mock_bank-dev:3000
     ports:
       - "3001:3001"
     volumes:
       - ./finnets/lib:/finnets/lib
       - ./finnets/eslint.config.mjs:/finnets/eslint.config.mjs
-      - ./finnets/db:/finnets/db
       - ./finnets/jsconfig.json:/finnets/jsconfig.json
       - ./finnets/next.config.mjs:/finnets/next.config.mjs
       - ./finnets/package.json:/finnets/package.json
@@ -24,6 +24,8 @@ services:
       - ./finnets/components:/finnets/components/
     working_dir: /finnets
     command: sh -c "npm i --no-save && npm run dev"
+    depends_on:
+      - mock_bank
     networks: [bank_dev_net, bank_shared_net]
 
   mock_bank:
@@ -36,6 +38,11 @@ services:
     environment:
       - APP_NAME=mock_bank
       - NODE_ENV=development
+      - DB_HOST=mock_bank_database
+      - DB_PORT=3306
+      - DB_NAME=Finnets
+      - DB_USER=root
+      - DB_PASS=${DATABASE_PASS}
     ports:
       - "3000:3000"
     volumes:

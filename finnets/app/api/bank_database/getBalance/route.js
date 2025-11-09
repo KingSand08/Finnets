@@ -1,48 +1,56 @@
-import { NextResponse } from 'next/server.js';
-import { getBalanceByAccount } from '@/db/queries/getBalanceByAccount.js';
+import { NextResponse } from 'next/server';
 
-export const GET = async (request) => {
+/**
+ * Proxy endpoint to get balance from mock_bank
+ * GET /api/bank_database/getBalance?username=john&account_number=1001
+ */
+export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const username = searchParams.get('username');
-  const account_number = searchParams.get('account-number');
+  const account_number = searchParams.get('account_number');
 
   if (!username || !account_number) {
     return NextResponse.json(
-      { error: 'Missing username and account_number parameters.' },
+      { error: 'Missing required parameters.' },
       { status: 400 }
     );
   }
-  /** Verify the access authorization before execute the query
-   *
-   * Example codes if we use auth and session
-   * const session = await getServerSession(authOptions);
-   * if (!session) {
-   *    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-   * }
-   *
-   * if (session.user.username !== new URL(request.url).get("username") {
-   *    return NextResponse.json({ message: "Forbidden" }, {status: 403 });
-   * }
-   * */
 
   try {
-    const result = await getBalanceByAccount(username, account_number);
+    const bankApiUrl = process.env.BANK_API_URL;
+    
+    // Forward cookies from client request to mock_bank
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    
+    const cookieHeader = request.headers.get('cookie');
+    if (cookieHeader) {
+      headers['Cookie'] = cookieHeader;
+    }
+    
+    const response = await fetch(
+      `${bankApiUrl}/api/bank/balance?username=${username}&account_number=${account_number}`,
+      {
+        cache: 'no-store',
+        headers,
+        credentials: 'include',
+      }
+    );
 
-    if (!result) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'No account found for the given username.',
-        },
-        { status: 404 }
-      );
+    if (!response.ok) {
+      const errorData = await response.json();
+      return NextResponse.json(errorData, { status: response.status });
     }
 
-    return NextResponse.json({ success: true, data: result });
+    const data = await response.json();
+    return NextResponse.json(data);
   } catch (error) {
+    console.error('Error proxying balance request:', error);
     return NextResponse.json(
       { error: 'Failed to fetch balance.' },
       { status: 500 }
     );
   }
-};
+}
+
