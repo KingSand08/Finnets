@@ -21,7 +21,7 @@ export default function Chat({ initial_messages, cust_context }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          message: userText, 
+          message: userText,
           context,
         }),
       });

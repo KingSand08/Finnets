@@ -9,7 +9,6 @@ export const getAccounts = async (username) => {
     WHERE C.username = ?;
   `;
 
-  // console.log('I GET HERE SOMEHOW');
   const result = await executeQuery(query, [username]);
   return result || null;
 };
