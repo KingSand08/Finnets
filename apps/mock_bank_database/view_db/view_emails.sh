@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-set -a
-source "$(dirname "$0")/../../../.env"
-set +a
-
-docker exec -it mock_bank_database mysql -uroot -p"$DATABASE_PASS" -e "USE Finnets; SELECT * FROM Emails;"

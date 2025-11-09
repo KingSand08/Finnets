@@ -1,0 +1,60 @@
+name: Finnets-App-Development
+services:
+  finnets:
+    build:
+      context: ./finnets
+      dockerfile: ./docker/Dockerfile.dev
+    container_name: finents-dev
+    env_file:
+      - ./.env
+    environment:
+      - APP_NAME=finnets
+      - NODE_ENV=development
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./finnets/lib:/finnets/lib
+      - ./finnets/eslint.config.mjs:/finnets/eslint.config.mjs
+      - ./finnets/db:/finnets/db
+      - ./finnets/jsconfig.json:/finnets/jsconfig.json
+      - ./finnets/next.config.mjs:/finnets/next.config.mjs
+      - ./finnets/package.json:/finnets/package.json
+      - ./finnets/app:/finnets/app/
+      - ./finnets/public:/finnets/public/
+      - ./finnets/components:/finnets/components/
+    working_dir: /finnets
+    command: sh -c "npm i --no-save && npm run dev"
+    networks: [bank_dev_net, bank_shared_net]
+
+  mock_bank:
+    build:
+      context: ./mock_bank
+      dockerfile: ./docker/Dockerfile.dev
+    container_name: mock_bank-dev
+    env_file:
+      - ./.env
+    environment:
+      - APP_NAME=mock_bank
+      - NODE_ENV=development
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./mock_bank/lib:/mock_bank/lib
+      - ./mock_bank/eslint.config.mjs:/mock_bank/eslint.config.mjs
+      - ./mock_bank/db:/mock_bank/db
+      - ./mock_bank/jsconfig.json:/mock_bank/jsconfig.json
+      - ./mock_bank/next.config.mjs:/mock_bank/next.config.mjs
+      - ./mock_bank/package.json:/mock_bank/package.json
+      - ./mock_bank/app:/mock_bank/app/
+      - ./mock_bank/public:/mock_bank/public/
+      - ./mock_bank/components:/mock_bank/components/
+      - ./mock_bank/middleware.js:/mock_bank/middleware.js
+    working_dir: /mock_bank
+    command: sh -c "npm i --no-save && npm run dev"
+    networks: [bank_dev_net, bank_shared_net]
+
+networks:
+  bank_dev_net: {}
+  bank_shared_net:
+    external: true
+    name: bank_shared_net

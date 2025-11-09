@@ -1,0 +1,30 @@
+# syntax=docker.io/docker/dockerfile:1
+
+FROM node:current-alpine3.22 AS base
+
+# Install dependencies only when needed
+FROM base AS deps
+RUN apk add --no-cache libc6-compat
+WORKDIR /finnet-app
+
+# Install dependencies based on the preferred package manager
+COPY package.json yarn.lock* package-lock.json* npm-lock.yaml* .npmrc* ./
+RUN \
+  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+  elif [ -f package-lock.json ]; then npm ci; \
+  elif [ -f npm-lock.yaml ]; then corepack enable npm && npm i --frozen-lockfile; \
+  else echo "Lockfile not found." && exit 1; \
+  fi
+
+
+# Build complete dev application
+# Copy *all* source code (for dev container to have latest files)
+COPY . .
+
+EXPOSE 3001
+
+ENV PORT=3001
+ENV HOSTNAME="0.0.0.0"
+
+# Default command for dev mode
+CMD ["npm", "run", "dev"]

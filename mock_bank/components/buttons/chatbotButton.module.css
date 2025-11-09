@@ -1,0 +1,26 @@
+.chat_button {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  cursor: pointer;
+  position: fixed;
+  right: 5em;
+  bottom: 5em;
+  width: 99px;
+  height: 99px;
+}
+
+.chat_button img {
+  width: 100px;
+  height: 100px;
+}
+
+.chat_button:hover {
+  transform: translateY(-0.1em);
+  box-shadow: 4px 9px 4px #626262;
+}
+
+.chat_button:active {
+  transform: translateY(0em);
+  box-shadow: 1px 2px 1px #626262;
+}

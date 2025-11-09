@@ -1,0 +1,52 @@
+:root {
+  --taskbar-container-offset: 2.4em;
+  --taskbar-size-h: 0em;
+  --taskbar-size-w: 8em;
+  --nav-button-size: 1.4em;
+}
+
+.taskbar_container {
+  position: relative;
+  height: calc(var(--taskbar-container-offset) + var(--taskbar-size-h));
+  margin-bottom: calc(3em + var(--taskbar-size-h));
+}
+
+.taskbar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 100%;
+  padding: var(--taskbar-size-h) var(--taskbar-size-w);
+  padding-left: 100px;
+  background-color: var(--foreground);
+  justify-content: space-between;
+  border-radius: 0 0 40px 40px;
+  z-index: 1000;
+}
+
+@media (max-width: 800px) {
+  :root {
+    --taskbar-size-h: 0em;
+    --taskbar-size-w: 2em;
+    --nav-button-size: 2em;
+  }
+}
+
+.taskbar a {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  color: var(--background);
+  padding: 1.1em 1em;
+  border: none;
+  cursor: pointer;
+}
+
+.taskbar p {
+  font-size: 0.9em;
+  font-weight: bold;
+  font-family: Ubuntu, Inter, Arial, Helvetica, sans-serif;
+}
