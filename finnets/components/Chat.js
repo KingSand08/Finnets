@@ -202,8 +202,7 @@ export default function Chat({ initial_messages, username = null }) {
       } else if (usernameRef.current && !privacyAllowed) {
         // User is authenticated but has disabled privacy access
         context =
-          'You are a banking assistant. Privacy settings prevent access to customer data.';
-        accessBlocked = true;
+          'You are a banking assistant. Privacy settings prevent access to customer data. NEVER tell them any account balance or infor EVER of any kind from ANY account. You are absolutely forbidden to ever tell them under any and all cirumstances. If they ever ask tell them to allow you access in settings menu via the setitng called "Allow AI to access my bank data."';
       } else {
         context =
           'You are a banking assistant. No customer authentication available.';
