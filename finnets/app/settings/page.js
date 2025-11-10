@@ -11,7 +11,19 @@ import { doNothingTemp } from '@/lib/doNothing';
 import {
   getPrivacyPreference,
   setPrivacyPreference,
-} from '@/lib/settings/privacyPreference';
+  getFontHeadings,
+  setFontHeadings,
+  getFontBody,
+  setFontBody,
+  getBodyColor,
+  setBodyColor,
+  getHeadingColor,
+  setHeadingColor,
+  getBackgroundColor,
+  setBackgroundColor,
+  getForegroundColor,
+  setForegroundColor,
+} from '@/lib/settings/settingControls';
 
 const SettingsPage = async () => {
   const fonts = Array.isArray(fontList)
@@ -19,6 +31,12 @@ const SettingsPage = async () => {
     : [];
 
   const allowDbAccess = await getPrivacyPreference();
+  const fontHeadings = await getFontHeadings();
+  const fontBody = await getFontBody();
+  const colorHeadings = await getHeadingColor();
+  const colorBody = await getBodyColor();
+  const colorBackground = await getBodyColor();
+  const colorForeground = await getBodyColor();
 
   return (
     <div className={style.page}>
@@ -36,7 +54,7 @@ const SettingsPage = async () => {
                 prevStatus={allowDbAccess}
               />
             </div>
-            <h3>User Data</h3>
+            {/* <h3>User Data</h3>
             <div className={style.selection_options}>
               <SettingSwitchControl
                 title='Use my data for personalized AI recommendations'
@@ -52,7 +70,7 @@ const SettingsPage = async () => {
                 list={['Never', 'Yes']}
               />
               <DeleteButtonSection />
-            </div>
+            </div> */}
           </SettingControlSection>
         </div>
 
@@ -64,12 +82,14 @@ const SettingsPage = async () => {
               <SettingSelectionControl
                 list={fonts}
                 title='Headings'
-                func={doNothingTemp}
+                func={setFontHeadings}
+                prevStatus={fontHeadings}
               />
               <SettingSelectionControl
                 list={fonts}
                 title='Body'
-                func={doNothingTemp}
+                func={setFontBody}
+                prevStatus={fontBody}
               />
             </div>
           </SettingControlSection>
@@ -78,23 +98,27 @@ const SettingsPage = async () => {
             <div className={style.selection_options}>
               <SettingColorControl
                 title='Background'
-                func={doNothingTemp}
+                func={setBackgroundColor}
                 baseColorCode='--background'
+                prevStatus={colorBackground}
               />
               <SettingColorControl
                 title='Foreground'
-                func={doNothingTemp}
+                func={setForegroundColor}
                 baseColorCode='--foreground'
+                prevStatus={colorForeground}
               />
               <SettingColorControl
                 title='Heading'
-                func={doNothingTemp}
+                func={setHeadingColor}
                 baseColorCode='#000000'
+                prevStatus={colorHeadings}
               />
               <SettingColorControl
                 title='Body'
-                func={doNothingTemp}
+                func={setBodyColor}
                 baseColorCode='#000000'
+                prevStatus={colorBody}
               />
             </div>
           </SettingControlSection>
