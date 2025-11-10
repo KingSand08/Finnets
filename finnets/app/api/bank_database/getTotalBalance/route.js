@@ -32,6 +32,13 @@ export async function GET(request) {
     };
     
     const cookieHeader = request.headers.get('cookie');
+    // Block when user disabled DB access
+    if (cookieHeader && /(?:^|;\s*)privacy_db_access=disabled(?:;|$)/.test(cookieHeader)) {
+      return NextResponse.json(
+        { error: 'Privacy mode is enabled. Database access is disabled.' },
+        { status: 403 }
+      );
+    }
     if (cookieHeader) {
       headers['Cookie'] = cookieHeader;
     }

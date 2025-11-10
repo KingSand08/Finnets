@@ -74,12 +74,28 @@ export const SettingSwitchControl = ({
 
   const [isOn, setIsOn] = useState(prevStatus);
 
-  const handleToggle = () => setIsOn((prev) => !prev);
+  // Sync local state with server state when prevStatus changes
+  useEffect(() => {
+    setIsOn(prevStatus);
+  }, [prevStatus]);
+
+  const handleToggle = (e) => {
+    const next = !isOn;
+    setIsOn(next);
+    // submit form with new value
+    const form = e.currentTarget?.form;
+    if (form) {
+      const input = form.querySelector('input[name="value"]');
+      if (input) input.value = next ? 'on' : 'off';
+      form.requestSubmit();
+    }
+  };
 
   return (
     <div className={style.selection_container}>
       <h4>{title}</h4>
       <form action={action}>
+        <input type='hidden' name='value' value={isOn ? 'on' : 'off'} />
         <label className={style.switch}>
           <input type='checkbox' checked={isOn} onChange={handleToggle} />
           <span className={style.slider}></span>

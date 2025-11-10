@@ -1,4 +1,3 @@
-'use server';
 import {
   DeleteButtonSection,
   SettingColorControl,
@@ -9,11 +8,14 @@ import SettingControlSection from '@/components/Settings/SettingControlSection';
 import fontList from '@/lib/fontSupport.json';
 import style from './settingspage.module.css';
 import { doNothingTemp } from '@/lib/doNothing';
+import { getPrivacyPreference, setPrivacyPreference } from '@/lib/privacyPreference';
 
-const SettingsPage = () => {
+const SettingsPage = async () => {
   const fonts = Array.isArray(fontList)
     ? fontList.map((o) => (typeof o === 'string' ? o : o?.name)).filter(Boolean)
     : [];
+
+  const allowDbAccess = await getPrivacyPreference();
 
   return (
     <div className={style.page}>
@@ -23,6 +25,14 @@ const SettingsPage = () => {
         <div className={style.section}>
           <h2>Finnet Privacy Control</h2>
           <SettingControlSection>
+            <h3>AI Data Access</h3>
+            <div className={style.selection_options}>
+              <SettingSwitchControl
+                title='Allow AI to access my bank data'
+                func={setPrivacyPreference}
+                prevStatus={allowDbAccess}
+              />
+            </div>
             <h3>User Data</h3>
             <div className={style.selection_options}>
               <SettingSwitchControl
