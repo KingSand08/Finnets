@@ -8,7 +8,10 @@ import SettingControlSection from '@/components/Settings/SettingControlSection';
 import fontList from '@/lib/fontSupport.json';
 import style from './settingspage.module.css';
 import { doNothingTemp } from '@/lib/doNothing';
-import { getPrivacyPreference, setPrivacyPreference } from '@/lib/privacyPreference';
+import {
+  getPrivacyPreference,
+  setPrivacyPreference,
+} from '@/lib/settings/privacyPreference';
 
 const SettingsPage = async () => {
   const fonts = Array.isArray(fontList)

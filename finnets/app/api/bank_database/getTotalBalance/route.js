@@ -19,21 +19,24 @@ export async function GET(request) {
 
   try {
     const bankApiUrl = process.env.BANK_API_URL;
-    
+
     // Build URL with optional type parameter
     let url = `${bankApiUrl}/api/bank/total-balance?username=${username}`;
     if (type) {
       url += `&type=${type}`;
     }
-    
+
     // Forward cookies from client request to mock_bank
     const headers = {
       'Content-Type': 'application/json',
     };
-    
+
     const cookieHeader = request.headers.get('cookie');
     // Block when user disabled DB access
-    if (cookieHeader && /(?:^|;\s*)privacy_db_access=disabled(?:;|$)/.test(cookieHeader)) {
+    if (
+      cookieHeader &&
+      /(?:^|;\s*)chat_privacy=disabled(?:;|$)/.test(cookieHeader)
+    ) {
       return NextResponse.json(
         { error: 'Privacy mode is enabled. Database access is disabled.' },
         { status: 403 }
@@ -42,7 +45,7 @@ export async function GET(request) {
     if (cookieHeader) {
       headers['Cookie'] = cookieHeader;
     }
-    
+
     const response = await fetch(url, {
       cache: 'no-store',
       headers,
@@ -64,4 +67,3 @@ export async function GET(request) {
     );
   }
 }
-

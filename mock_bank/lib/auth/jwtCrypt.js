@@ -1,7 +1,7 @@
 'use server';
 import { jwtVerify, SignJWT } from 'jose';
 
-const secretKey = 'secret';
+const secretKey = process.env.BANK_SECRET;
 const key = new TextEncoder().encode(secretKey);
 
 export async function jwtDecrypt(input) {

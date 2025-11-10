@@ -1,5 +1,5 @@
 'use client';
-import { deleteUserData } from '@/lib/deleteUserData';
+import { deleteUserData } from '@/lib/settings/deleteUserData';
 import style from './deletebutton.module.css';
 
 const DeleteButton = () => {
