@@ -16,8 +16,10 @@ export async function GET(request) {
   }
 
   try {
-    const bankApiUrl = process.env.BANK_API_URL;
-
+    const bankApiUrl =
+      process.env.NODE_ENV === 'production'
+        ? process.env.BANK_API_URL
+        : process.env.BANK_API_URL_DEV;
     // Forward cookies from client request to mock_bank
     const headers = {
       'Content-Type': 'application/json',

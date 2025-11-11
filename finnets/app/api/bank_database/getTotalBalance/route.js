@@ -18,7 +18,10 @@ export async function GET(request) {
   }
 
   try {
-    const bankApiUrl = process.env.BANK_API_URL;
+    const bankApiUrl =
+      process.env.NODE_ENV === 'production'
+        ? process.env.BANK_API_URL
+        : process.env.BANK_API_URL_DEV;
 
     // Build URL with optional type parameter
     let url = `${bankApiUrl}/api/bank/total-balance?username=${username}`;

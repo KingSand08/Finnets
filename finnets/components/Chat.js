@@ -1,5 +1,6 @@
 'use client';
 import style from '@/components/chat.module.css';
+import Image from 'next/image';
 import { useState, useRef } from 'react';
 
 export default function Chat({ initial_messages, username = null }) {
@@ -19,29 +20,54 @@ export default function Chat({ initial_messages, username = null }) {
 
   const SendChatPrompt = async (userText) => {
     try {
-      const basePath =
-        typeof window !== 'undefined' &&
-        window.location.pathname.startsWith('/finnets/')
-          ? '/finnets'
-          : '';
+      const basePath = process.env.NODE_ENV === 'production' ? '/finnets/' : '';
 
       let context = '';
       let accessBlocked = false;
 
       // Check privacy preference first - before making any API calls
-      const checkPrivacyPreference = () => {
+      const checkPrivacyPreference = async () => {
         if (typeof document === 'undefined') return true; // Default to enabled on server
-        const cookies = document.cookie.split(';');
-        for (let cookie of cookies) {
-          const [name, value] = cookie.trim().split('=');
-          if (name === 'chat_privacy') {
-            return value !== 'disabled';
+        try {
+          const privStatusRes = await fetch(
+            `${basePath}api/watsonx/getPrivacyStatus`,
+            {
+              cache: 'no-store',
+              credentials: 'include',
+            }
+          );
+
+          if (!privStatusRes.ok) {
+            console.warn(
+              'Privacy status fetch failed:',
+              privStatusRes.status,
+              privStatusRes.statusText
+            );
+            return false;
           }
+
+          const raw = await privStatusRes.json();
+
+          const value =
+            typeof raw === 'object' && raw !== null && 'value' in raw
+              ? raw.value
+              : raw;
+
+          const allowed =
+            value === true ||
+            value === 1 ||
+            value === 'true' ||
+            value === 'on' ||
+            value === 'enabled';
+
+          return allowed;
+        } catch (e) {
+          console.error('Privacy status check error:', e);
+          return true;
         }
-        return true; // Default to enabled if not set
       };
 
-      const privacyAllowed = checkPrivacyPreference();
+      const privacyAllowed = await checkPrivacyPreference();
 
       if (usernameRef.current && privacyAllowed) {
         // Fetch fresh banking data for each message
@@ -370,8 +396,8 @@ export default function Chat({ initial_messages, username = null }) {
             <div
               className={`${style.message} ${style.received} ${style.message_error}`}
             >
-              Looks like you're asking for personal info, but I don't have
-              access yet. Update your privacy settings in Settings to grant
+              Looks like you&apos;re asking for personal info, but I don&apos;t
+              have access yet. Update your privacy settings in Settings to grant
               permission and try again.
             </div>
           )}
@@ -390,7 +416,9 @@ export default function Chat({ initial_messages, username = null }) {
             disabled={sendStatus}
           >
             <div>
-              <img
+              <Image
+                width={100}
+                height={100}
                 src='/icons/send-button.png'
                 alt='send button'
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
