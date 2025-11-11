@@ -66,17 +66,43 @@ export async function getFontBody() {
   }
 }
 
-function isValidHex6(s) {
-  return typeof s === 'string' && /^#[0-9A-Fa-f]{6}$/.test(s);
-}
-
 export async function getBackgroundColor() {
   try {
     const v = await getSettingPreference('color_background');
-    return isValidHex6(v);
+    return v.replace(/%23/g, '#') || null;
   } catch {
     return null;
   }
+}
+
+export async function getForegroundColor() {
+  try {
+    const v = await getSettingPreference('color_foreground');
+    return v.replace(/%23/g, '#') || null;
+  } catch {
+    null;
+  }
+}
+
+export async function getHeadingColor() {
+  try {
+    const v = await getSettingPreference('color_heading');
+    return v.replace(/%23/g, '#');
+  } catch {
+    return null;
+  }
+}
+export async function getBodyColor() {
+  try {
+    const v = await getSettingPreference('color_body');
+    return v.replace(/%23/g, '#');
+  } catch {
+    return 'null';
+  }
+}
+
+function isValidHex6(s) {
+  return typeof s === 'string' && /^#[0-9A-Fa-f]{6}$/.test(s);
 }
 
 export async function setBackgroundColor(prevState, formData) {
@@ -88,15 +114,6 @@ export async function setBackgroundColor(prevState, formData) {
     return saved;
   } catch {
     return prevState;
-  }
-}
-
-export async function getForegroundColor() {
-  try {
-    const v = await getSettingPreference('color_foreground');
-    return isValidHex6(v) ? v : '#000000';
-  } catch {
-    return '#000000';
   }
 }
 
@@ -124,15 +141,6 @@ export async function setHeadingColor(prevState, formData) {
   }
 }
 
-export async function getHeadingColor() {
-  try {
-    const v = await getSettingPreference('color_heading');
-    return isValidHex6(v);
-  } catch {
-    return null;
-  }
-}
-
 export async function setBodyColor(prevState, formData) {
   try {
     const color = formData.get('userColor');
@@ -142,14 +150,5 @@ export async function setBodyColor(prevState, formData) {
     return saved;
   } catch {
     return prevState;
-  }
-}
-
-export async function getBodyColor() {
-  try {
-    const v = await getSettingPreference('color_body');
-    return isValidHex6(v) ? v : '#000000';
-  } catch {
-    return '#000000';
   }
 }

@@ -1,5 +1,5 @@
 import {
-  DeleteButtonSection,
+  // DeleteButtonSection,
   SettingColorControl,
   SettingSelectionControl,
   SettingSwitchControl,
@@ -35,9 +35,18 @@ const SettingsPage = async () => {
   const fontBody = await getFontBody();
   const colorHeadings = await getHeadingColor();
   const colorBody = await getBodyColor();
-  const colorBackground = await getBodyColor();
-  const colorForeground = await getBodyColor();
-
+  const colorBackground = await getBackgroundColor();
+  const colorForeground = await getForegroundColor();
+  console.log(
+    'body: ',
+    colorBody,
+    'headings: ',
+    colorBody,
+    'background: ',
+    colorBackground,
+    'foreground: ',
+    colorForeground
+  );
   return (
     <div className={style.page}>
       <h1>Settings</h1>

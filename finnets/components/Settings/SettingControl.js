@@ -32,41 +32,106 @@ export const SettingSelectionControl = ({
   );
 };
 
+// export const SettingColorControl = ({
+//   title,
+//   func, // server action that reads "userColor"
+//   baseColorCode, // e.g. "#112233" or "--heading-color"
+//   prevStatus = null, // saved hex like "#112233" (or null)
+// }) => {
+//   const [state, action, isPending] = useActionState(func, '');
+
+//   const [color, setColor] = useState(() => (isHex ? baseColorCode : ''));
+
+//   useEffect(() => {
+//     const codeUsed = prevStatus ? prevStatus : baseColorCode;
+//     const isHex = typeof codeUsed === 'string' && codeUsed.startsWith('#');
+
+//     if (!codeUsed || isHex) return;
+
+//     const id = setTimeout(() => {
+//       const next =
+//         getComputedStyle(document.documentElement)
+//           .getPropertyValue(codeUsed)
+//           .trim() || '';
+
+//       // Guard to avoid unnecessary renders
+//       setColor((prev) => (prev === next ? prev : next));
+//     }, 0);
+
+//     return () => clearTimeout(id);
+//   }, [prevStatus, baseColorCode]);
+
+//   return (
+//     // Remount when the authoritative value changes so initial state recomputes
+//     <div
+//       className={style.selection_container}
+//       key={prevIsHex ? prevStatus : baseColorCode}
+//     >
+//       <h4>{title}</h4>
+//       <form action={action} className={style.color_control}>
+//         <label>
+//           <span suppressHydrationWarning>{color}</span>
+//         </label>
+//         <input
+//           type='color'
+//           name='userColor'
+//           value={isHex6(color) ? color : '#000000'} // safe fallback
+//           onChange={(e) => {
+//             const next = e.target.value; // "#aabbcc"
+//             setColor(next); // optimistic UI
+//             e.currentTarget.form?.requestSubmit(); // fire server action
+//           }}
+//           disabled={isPending}
+//         />
+//       </form>
+//     </div>
+//   );
+// };
+
 export const SettingColorControl = ({
   title,
-  func, // server action that reads "userColor"
-  baseColorCode, // e.g. "#112233" or "--heading-color"
-  prevStatus = null, // saved hex like "#112233" (or null)
+  func,
+  baseColorCode,
+  prevStatus,
 }) => {
-  const [state, action, isPending] = useActionState(func, '');
+  const [error, action, isPending] = useActionState(func, '');
 
-  const [color, setColor] = useState(() => (isHex ? baseColorCode : ''));
+  const isBaseHex =
+    typeof baseColorCode === 'string' && baseColorCode.startsWith('#');
+
+  const [color, setColor] = useState(() => (isBaseHex ? baseColorCode : ''));
 
   useEffect(() => {
-    const codeUsed = prevStatus ? prevStatus : baseColorCode;
-    const isHex = typeof codeUsed === 'string' && codeUsed.startsWith('#');
+    // If cookie exists use that color
+    console.log('{', title, 'PRE CLIENT}:', prevStatus);
+    if (typeof prevStatus === 'string' && prevStatus.startsWith('#')) {
+      console.log('CLIENT:', prevStatus);
+      const id = setTimeout(() => {
+        const next = prevStatus;
 
-    if (!codeUsed || isHex) return;
+        // Guard to avoid unnecessary renders
+        setColor((prev) => (prev === next ? prev : next));
+      }, 0);
+      return () => clearTimeout(id);
+    }
+    // If default color from css isnt found then leave
+    if (!baseColorCode || isBaseHex) return;
 
+    // Retrieve color from vss and apply it
     const id = setTimeout(() => {
       const next =
         getComputedStyle(document.documentElement)
-          .getPropertyValue(codeUsed)
+          .getPropertyValue(baseColorCode)
           .trim() || '';
 
       // Guard to avoid unnecessary renders
       setColor((prev) => (prev === next ? prev : next));
     }, 0);
-
     return () => clearTimeout(id);
-  }, [prevStatus, baseColorCode]);
+  }, [title, prevStatus, baseColorCode, isBaseHex]);
 
   return (
-    // Remount when the authoritative value changes so initial state recomputes
-    <div
-      className={style.selection_container}
-      key={prevIsHex ? prevStatus : baseColorCode}
-    >
+    <div className={style.selection_container}>
       <h4>{title}</h4>
       <form action={action} className={style.color_control}>
         <label>
@@ -74,12 +139,13 @@ export const SettingColorControl = ({
         </label>
         <input
           type='color'
+          id='myColorPicker'
           name='userColor'
-          value={isHex6(color) ? color : '#000000'} // safe fallback
+          value={color || '#000000'}
           onChange={(e) => {
-            const next = e.target.value; // "#aabbcc"
-            setColor(next); // optimistic UI
-            e.currentTarget.form?.requestSubmit(); // fire server action
+            const next = e.target.value;
+            setColor(next);
+            e.currentTarget.form?.requestSubmit();
           }}
           disabled={isPending}
         />
@@ -88,7 +154,6 @@ export const SettingColorControl = ({
   );
 };
 
-const isHex6 = (s) => typeof s === 'string' && /^#[0-9A-Fa-f]{6}$/.test(s);
 export const SettingSwitchControl = ({
   title,
   func = {},
