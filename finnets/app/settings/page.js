@@ -23,6 +23,12 @@ import {
   setBackgroundColor,
   getForegroundColor,
   setForegroundColor,
+  getLanguagePreference,
+  setLanguagePreference,
+  getContrastPreference,
+  setContrastPreference,
+  setSearchPreference,
+  getSearchPreference,
 } from '@/lib/settings/settingControls';
 
 const SettingsPage = async () => {
@@ -37,16 +43,10 @@ const SettingsPage = async () => {
   const colorBody = await getBodyColor();
   const colorBackground = await getBackgroundColor();
   const colorForeground = await getForegroundColor();
-  console.log(
-    'body: ',
-    colorBody,
-    'headings: ',
-    colorBody,
-    'background: ',
-    colorBackground,
-    'foreground: ',
-    colorForeground
-  );
+  const langPref = await getLanguagePreference();
+  const constrastPref = await getContrastPreference();
+  const searchPref = await getSearchPreference();
+
   return (
     <div className={style.page}>
       <h1>Settings</h1>
@@ -138,15 +138,18 @@ const SettingsPage = async () => {
             <div className={style.selection_options}>
               <SettingSwitchControl
                 title='Enable Language Switch Button'
-                func={doNothingTemp}
+                func={setLanguagePreference}
+                prevStatus={langPref}
               />
               <SettingSwitchControl
                 title='Enable High Contrast Mode'
-                func={doNothingTemp}
+                func={setContrastPreference}
+                prevStatus={constrastPref}
               />
               <SettingSwitchControl
                 title='Enable Page Searching'
-                func={doNothingTemp}
+                func={setSearchPreference}
+                prevStatus={searchPref}
               />
             </div>
           </SettingControlSection>

@@ -152,3 +152,42 @@ export async function setBodyColor(prevState, formData) {
     return prevState;
   }
 }
+
+export async function getLanguagePreference() {
+  const value = await getSettingPreference('lang_pref');
+  return value !== DISABLED;
+}
+
+export async function setLanguagePreference(prevState, formData) {
+  const enabled = formData.get('value') === 'on';
+  const vars = enabled ? ENABLED : DISABLED;
+  const value = await setSettingCookie(prevState, 'lang_pref', vars);
+  revalidatePath('/settings');
+  return value;
+}
+
+export async function getContrastPreference() {
+  const value = await getSettingPreference('contrast_pref');
+  return value !== DISABLED;
+}
+
+export async function setContrastPreference(prevState, formData) {
+  const enabled = formData.get('value') === 'on';
+  const vars = enabled ? ENABLED : DISABLED;
+  const value = await setSettingCookie(prevState, 'contrast_pref', vars);
+  revalidatePath('/settings');
+  return value;
+}
+
+export async function getSearchPreference() {
+  const value = await getSettingPreference('contrast_pref');
+  return value !== DISABLED;
+}
+
+export async function setSearchPreference(prevState, formData) {
+  const enabled = formData.get('value') === 'on';
+  const vars = enabled ? ENABLED : DISABLED;
+  const value = await setSettingCookie(prevState, 'contrast_pref', vars);
+  revalidatePath('/settings');
+  return value;
+}
