@@ -2,9 +2,9 @@
 import React, { useState } from 'react';
 import SvgComponent from './SvgComponent';
 import style from './laguagebutton.module.css';
-import supportedLangs from '@/data/supportedLangs.json';
+import { setLanguagePref } from '@/lib/chat/setLanguagePref';
 
-const LanguageButton = () => {
+const LanguageButton = ({ supportedLangs = [{ language: 'English' }] }) => {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -23,11 +23,20 @@ const LanguageButton = () => {
           >
             {supportedLangs.map((lang) => {
               return (
-                <>
-                  <button className={style.button} key={lang.language}>
+                <form
+                  key={lang.language}
+                  action={async (formData) => {
+                    const status = await setLanguagePref('', formData);
+                    console.log(status);
+                    setOpen(false);
+                  }}
+                  className={style.form}
+                >
+                  <input type='hidden' name='lang' value={lang.language} />
+                  <button className={style.button} type='submit'>
                     <p>{lang.language}</p>
                   </button>
-                </>
+                </form>
               );
             })}
           </div>
