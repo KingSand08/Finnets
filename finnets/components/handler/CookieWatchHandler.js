@@ -25,6 +25,12 @@ const CookieWatchHandler = async () => {
       contrastVal: '#ffffff',
     },
     {
+      name: 'color_recieved',
+      def: '#d0d0d0;',
+      cssName: '--received-color',
+      contrastVal: '#d0d0d0;',
+    },
+    {
       name: 'color_foreground',
       def: '#3a84ff',
       cssName: '--foreground',

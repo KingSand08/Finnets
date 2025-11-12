@@ -101,6 +101,15 @@ export async function getBodyColor() {
   }
 }
 
+export async function getReceivedColor() {
+  try {
+    const v = await getSettingPreference('color_recieved');
+    return v.replace(/%23/g, '#');
+  } catch {
+    return 'null';
+  }
+}
+
 function isValidHex6(s) {
   return typeof s === 'string' && /^#[0-9A-Fa-f]{6}$/.test(s);
 }
@@ -146,6 +155,18 @@ export async function setBodyColor(prevState, formData) {
     const color = formData.get('userColor');
     if (!isValidHex6(color)) return prevState;
     const saved = await setSettingCookie(prevState, 'color_body', color);
+    revalidatePath('/settings');
+    return saved;
+  } catch {
+    return prevState;
+  }
+}
+
+export async function setReceivedColor(prevState, formData) {
+  try {
+    const color = formData.get('userColor');
+    if (!isValidHex6(color)) return prevState;
+    const saved = await setSettingCookie(prevState, 'color_recieved', color);
     revalidatePath('/settings');
     return saved;
   } catch {

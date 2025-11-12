@@ -28,6 +28,8 @@ import {
   setContrastPreference,
   setSearchPreference,
   getSearchPreference,
+  getReceivedColor,
+  setReceivedColor,
 } from '@/lib/settings/settingControls';
 
 const SettingsPage = async () => {
@@ -45,6 +47,7 @@ const SettingsPage = async () => {
   const langPref = await getLanguagePreference();
   const constrastPref = await getContrastPreference();
   const searchPref = await getSearchPreference();
+  const colorReceived = await getReceivedColor();
 
   return (
     <div className={style.page}>
@@ -115,6 +118,12 @@ const SettingsPage = async () => {
                 func={setForegroundColor}
                 baseColorCode='--foreground'
                 prevStatus={colorForeground}
+              />
+              <SettingColorControl
+                title='Received Messages'
+                func={setReceivedColor}
+                baseColorCode='--received-color'
+                prevStatus={colorReceived}
               />
               <SettingColorControl
                 title='Heading'
