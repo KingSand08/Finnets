@@ -5,9 +5,8 @@ import {
   SettingSwitchControl,
 } from '@/components/Settings/SettingControl';
 import SettingControlSection from '@/components/Settings/SettingControlSection';
-import fontList from '@/lib/fontSupport.json';
+import fontList from '@/data/fontSupport.json';
 import style from './settingspage.module.css';
-import { doNothingTemp } from '@/lib/doNothing';
 import {
   getPrivacyPreference,
   setPrivacyPreference,
@@ -120,13 +119,13 @@ const SettingsPage = async () => {
               <SettingColorControl
                 title='Heading'
                 func={setHeadingColor}
-                baseColorCode='#000000'
+                baseColorCode='--heading-text-color'
                 prevStatus={colorHeadings}
               />
               <SettingColorControl
                 title='Body'
                 func={setBodyColor}
-                baseColorCode='#000000'
+                baseColorCode='--body-text-color'
                 prevStatus={colorBody}
               />
             </div>

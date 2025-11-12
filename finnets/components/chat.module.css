@@ -1,6 +1,8 @@
 :root {
   --chat-header-h: 4em;
   --chat-input-h: 8em;
+  --darker-mix: #f4f4f4;
+  --secondary-background: var(--darker-mix);
 }
 
 /* Main page div settings */
@@ -17,7 +19,7 @@
   position: sticky;
   top: 0;
   height: var(--chat-header-h);
-  background-color: #f8f8f9;
+  background-color: var(--background);
   z-index: 10;
   margin-bottom: 1em;
   border-bottom: 1px solid #ccc;
@@ -101,6 +103,7 @@
 .received {
   background-color: #d0d0d0;
   align-self: flex-start;
+  mix-blend-mode: multiply;
 }
 .message_section .sent:last-child::after {
   content: 'Sent';
@@ -127,6 +130,7 @@
   bottom: 10.5em;
   right: 0;
   color: #888;
+  mix-blend-mode: multiply;
   padding: 5px;
   font-size: 12px;
 }
@@ -138,7 +142,8 @@
   left: 0;
   right: 0;
   height: var(--chat-input-h);
-  background-color: #f8f8f9;
+  background-color: var(--secondary-background);
+  mix-blend-mode: multiply;
   display: flex;
   gap: 1em;
   align-items: center;

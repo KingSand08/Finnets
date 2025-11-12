@@ -2,12 +2,13 @@
 import React, { useState, useEffect, useActionState } from 'react';
 import style from './settingcontrol.module.css';
 import DeleteButton from './DeleteButton';
+import { applyColor } from '@/lib/settings/applyUISetting';
 
 export const SettingSelectionControl = ({
   title,
   func,
   list = [],
-  prevStatus = 'Font 1',
+  prevStatus = 'Ubuntu',
 }) => {
   const [status, action, isPending] = useActionState(func, prevStatus);
 
@@ -32,69 +33,13 @@ export const SettingSelectionControl = ({
   );
 };
 
-// export const SettingColorControl = ({
-//   title,
-//   func, // server action that reads "userColor"
-//   baseColorCode, // e.g. "#112233" or "--heading-color"
-//   prevStatus = null, // saved hex like "#112233" (or null)
-// }) => {
-//   const [state, action, isPending] = useActionState(func, '');
-
-//   const [color, setColor] = useState(() => (isHex ? baseColorCode : ''));
-
-//   useEffect(() => {
-//     const codeUsed = prevStatus ? prevStatus : baseColorCode;
-//     const isHex = typeof codeUsed === 'string' && codeUsed.startsWith('#');
-
-//     if (!codeUsed || isHex) return;
-
-//     const id = setTimeout(() => {
-//       const next =
-//         getComputedStyle(document.documentElement)
-//           .getPropertyValue(codeUsed)
-//           .trim() || '';
-
-//       // Guard to avoid unnecessary renders
-//       setColor((prev) => (prev === next ? prev : next));
-//     }, 0);
-
-//     return () => clearTimeout(id);
-//   }, [prevStatus, baseColorCode]);
-
-//   return (
-//     // Remount when the authoritative value changes so initial state recomputes
-//     <div
-//       className={style.selection_container}
-//       key={prevIsHex ? prevStatus : baseColorCode}
-//     >
-//       <h4>{title}</h4>
-//       <form action={action} className={style.color_control}>
-//         <label>
-//           <span suppressHydrationWarning>{color}</span>
-//         </label>
-//         <input
-//           type='color'
-//           name='userColor'
-//           value={isHex6(color) ? color : '#000000'} // safe fallback
-//           onChange={(e) => {
-//             const next = e.target.value; // "#aabbcc"
-//             setColor(next); // optimistic UI
-//             e.currentTarget.form?.requestSubmit(); // fire server action
-//           }}
-//           disabled={isPending}
-//         />
-//       </form>
-//     </div>
-//   );
-// };
-
 export const SettingColorControl = ({
   title,
   func,
   baseColorCode,
   prevStatus,
 }) => {
-  const [error, action, isPending] = useActionState(func, '');
+  const [state, action, isPending] = useActionState(func, '');
 
   const isBaseHex =
     typeof baseColorCode === 'string' && baseColorCode.startsWith('#');
@@ -103,9 +48,7 @@ export const SettingColorControl = ({
 
   useEffect(() => {
     // If cookie exists use that color
-    console.log('{', title, 'PRE CLIENT}:', prevStatus);
     if (typeof prevStatus === 'string' && prevStatus.startsWith('#')) {
-      console.log('CLIENT:', prevStatus);
       const id = setTimeout(() => {
         const next = prevStatus;
 
@@ -129,6 +72,17 @@ export const SettingColorControl = ({
     }, 0);
     return () => clearTimeout(id);
   }, [title, prevStatus, baseColorCode, isBaseHex]);
+
+  // Apply Color to css
+  useEffect(() => {
+    if (state)
+      try {
+        console.log(baseColorCode, state);
+        applyColor({ varName: baseColorCode, newColor: state });
+      } catch (e) {
+        console.log(e);
+      }
+  }, [baseColorCode, state]);
 
   return (
     <div className={style.selection_container}>
