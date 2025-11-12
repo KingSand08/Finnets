@@ -11,7 +11,6 @@ services:
       - APP_NAME=finnets
       - NODE_ENV=production
       - INTERNAL_SECRET=${INTERNAL_SECRET}
-      - BANK_API_URL=http://mock_bank-prod:3000
     ports:
       - "3001"
     volumes:
@@ -24,6 +23,7 @@ services:
       - ./finnets/public:/finnets/public/
       - ./finnets/components:/finnets/components/
       - ./finnets/middleware.js:/finnets/middleware.js
+      - ./finnets/data/:/finnets/data/
     working_dir: /finnets
     command: sh -c "npm i --no-save && npm run build && npm run start"
     depends_on:
@@ -40,11 +40,6 @@ services:
     environment:
       - APP_NAME=mock_bank
       - NODE_ENV=production
-      - DB_HOST=mock_bank_database
-      - DB_PORT=3306
-      - DB_NAME=Finnets
-      - DB_USER=root
-      - DB_PASS=${DATABASE_PASS}
     ports:
       - "3000"
     volumes:

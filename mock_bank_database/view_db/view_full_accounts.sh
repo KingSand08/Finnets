@@ -3,7 +3,7 @@ set -a
 source "$(dirname "$0")/../../.env"
 set +a
 
-docker exec -it mock_bank_database mysql -uroot -p"$DATABASE_PASS" -e "
+docker exec -it mock_bank_database mysql -uroot -p"$DB_PASS" -e "
     USE Finnets;
     SELECT a.aid, c.cid, c.first_name, c.last_name, a.account_number, a.balance, a.type, e.email_address, c.username
     FROM Accounts AS a
