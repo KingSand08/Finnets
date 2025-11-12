@@ -8,6 +8,15 @@
   --language-font: Ubuntu, Arial, Helvetica, sans-serif;
   --received-color: #d0d0d0;
   --nav-button-size: 10px;
+
+  --taskbar-container-offset: 2.4em;
+  --taskbar-size-h: 0em;
+  --taskbar-size-w: 8em;
+  --nav-button-size: 1.4em;
+  --page-start-height: calc(
+    var(--taskbar-size-h) + var(--taskbar-container-offset) +
+      var(--taskbar-size-h)
+  );
 }
 
 html {
@@ -60,4 +69,12 @@ h6 {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+@media (max-width: 800px) {
+  :root {
+    --taskbar-size-h: 0em;
+    --taskbar-size-w: 2em;
+    --nav-button-size: 2em;
+  }
 }

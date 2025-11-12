@@ -1,6 +1,7 @@
 import './globals.css';
-import Taskbar from '@/components/Taskbar';
 import CookieWatchHandler from '@/components/handler/CookieWatchHandler';
+import Taskbar from '@/components/Taskbar';
+import LanguageButton from '@/components/LanguageButton';
 import { ubuntu, ubuntuMono, inter, comic_neue, cormorant } from '@/lib/Fonts';
 
 export const metadata = {
@@ -16,6 +17,7 @@ export default function RootLayout({ children }) {
       >
         <CookieWatchHandler />
         <Taskbar />
+        <LanguageButton />
         <div className='content'>{children}</div>
       </body>
     </html>

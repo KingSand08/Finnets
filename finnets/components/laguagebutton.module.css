@@ -1,0 +1,78 @@
+.lang_button {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  transition: transform 0.2s;
+}
+
+.lang_button:hover {
+  background: none;
+  border: none;
+  transform: translateY(-3px);
+}
+.lang_button:active {
+  background: none;
+  border: none;
+  transform: translateY(1px);
+}
+
+/* Lang Modal */
+:root {
+  --modal-width: 780px;
+}
+
+.modal_page {
+  position: fixed;
+  right: 1em;
+  top: calc(7em+ var(--page-start-height));
+  height: 10em;
+  width: 8em;
+  min-width: fit-content;
+  z-index: 70;
+  background-color: #d9e4e6;
+  border: 3px solid;
+  border-color: var(--foreground);
+  border-radius: 10px;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.25);
+}
+
+.modal {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  transform: translateX(100%);
+  transition: transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  padding: 0.5em 0;
+}
+
+.modalActive {
+  transform: translateX(0%);
+}
+
+.button {
+  background: none;
+  border: none;
+  padding: 0.5em 1em;
+  font-family: var(--language-font);
+}
+
+.button:hover {
+  background: none;
+  border: none;
+  background-color: #c4c4c4;
+}
+.button:active {
+  background: none;
+  border: none;
+  background-color: #4caded53;
+}
+
+p.button {
+  user-select: none;
+}

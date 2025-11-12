@@ -1,0 +1,40 @@
+'use client';
+import React, { useState } from 'react';
+import SvgComponent from './SvgComponent';
+import style from './laguagebutton.module.css';
+import supportedLangs from '@/data/supportedLangs.json';
+
+const LanguageButton = () => {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button
+        className={style.lang_button}
+        onClick={() => setOpen((prev) => !prev)}
+      >
+        <SvgComponent src='icons/translate.svg' noColor={true} size='3em' />
+      </button>
+      {open && (
+        <aside className={style.modal_page}>
+          <div
+            className={`${style.modal} ${open ? style.modalActive : ''}`}
+            role='dialog'
+            aria-modal='true'
+          >
+            {supportedLangs.map((lang) => {
+              return (
+                <>
+                  <button className={style.button} key={lang.language}>
+                    <p>{lang.language}</p>
+                  </button>
+                </>
+              );
+            })}
+          </div>
+        </aside>
+      )}
+    </>
+  );
+};
+
+export default LanguageButton;
