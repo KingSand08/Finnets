@@ -1,6 +1,7 @@
 'use server';
 import { revalidatePath } from 'next/cache';
 import { getSettingPreference, setSettingCookie } from '../cookies/Cookie';
+import { cookies } from 'next/headers';
 
 const ENABLED = 'enabled';
 const DISABLED = 'disabled';
@@ -28,7 +29,7 @@ export async function setFontHeadings(prevState, formData) {
     revalidatePath('/settings');
 
     return saved;
-  } catch {
+  } catch (e) {
     return prevState;
   }
 }
@@ -37,7 +38,7 @@ export async function getFontHeadings() {
   try {
     const v = await getSettingPreference('font_heading');
     return v;
-  } catch {
+  } catch (e) {
     return null;
   }
 }
@@ -52,7 +53,7 @@ export async function setFontBody(prevState, formData) {
     revalidatePath('/settings');
 
     return saved;
-  } catch {
+  } catch (e) {
     return prevState;
   }
 }
@@ -61,7 +62,7 @@ export async function getFontBody() {
   try {
     const v = await getSettingPreference('font_body');
     return v;
-  } catch {
+  } catch (e) {
     return null;
   }
 }
@@ -70,7 +71,7 @@ export async function getBackgroundColor() {
   try {
     const v = await getSettingPreference('color_background');
     return v.replace(/%23/g, '#') || null;
-  } catch {
+  } catch (e) {
     return null;
   }
 }
@@ -79,7 +80,7 @@ export async function getForegroundColor() {
   try {
     const v = await getSettingPreference('color_foreground');
     return v.replace(/%23/g, '#') || null;
-  } catch {
+  } catch (e) {
     null;
   }
 }
@@ -88,7 +89,7 @@ export async function getHeadingColor() {
   try {
     const v = await getSettingPreference('color_heading');
     return v.replace(/%23/g, '#');
-  } catch {
+  } catch (e) {
     return null;
   }
 }
@@ -96,7 +97,7 @@ export async function getBodyColor() {
   try {
     const v = await getSettingPreference('color_body');
     return v.replace(/%23/g, '#');
-  } catch {
+  } catch (e) {
     return 'null';
   }
 }
@@ -105,7 +106,7 @@ export async function getReceivedColor() {
   try {
     const v = await getSettingPreference('color_recieved');
     return v.replace(/%23/g, '#');
-  } catch {
+  } catch (e) {
     return 'null';
   }
 }
@@ -121,7 +122,18 @@ export async function setBackgroundColor(prevState, formData) {
     const saved = await setSettingCookie(prevState, 'color_background', color);
     revalidatePath('/settings');
     return saved;
-  } catch {
+  } catch (e) {
+    return prevState;
+  }
+}
+
+export async function resetBackgroundColor(prevState, _formData) {
+  try {
+    const store = await cookies();
+    store.delete('color_background');
+    revalidatePath('/settings');
+    return '';
+  } catch (e) {
     return prevState;
   }
 }
@@ -133,7 +145,18 @@ export async function setForegroundColor(prevState, formData) {
     const saved = await setSettingCookie(prevState, 'color_foreground', color);
     revalidatePath('/settings');
     return saved;
-  } catch {
+  } catch (e) {
+    return prevState;
+  }
+}
+
+export async function resetForegroundColor(prevState, _formData) {
+  try {
+    const store = await cookies();
+    store.delete('color_foreground');
+    revalidatePath('/settings');
+    return '';
+  } catch (e) {
     return prevState;
   }
 }
@@ -145,7 +168,18 @@ export async function setHeadingColor(prevState, formData) {
     const saved = await setSettingCookie(prevState, 'color_heading', color);
     revalidatePath('/settings');
     return saved;
-  } catch {
+  } catch (e) {
+    return prevState;
+  }
+}
+
+export async function resetHeadingColor(prevState, _formData) {
+  try {
+    const store = await cookies();
+    store.delete('color_heading');
+    revalidatePath('/settings');
+    return '';
+  } catch (e) {
     return prevState;
   }
 }
@@ -157,7 +191,18 @@ export async function setBodyColor(prevState, formData) {
     const saved = await setSettingCookie(prevState, 'color_body', color);
     revalidatePath('/settings');
     return saved;
-  } catch {
+  } catch (e) {
+    return prevState;
+  }
+}
+
+export async function resetBodyColor(prevState, _formData) {
+  try {
+    const store = await cookies();
+    store.delete('color_body');
+    revalidatePath('/settings');
+    return '';
+  } catch (e) {
     return prevState;
   }
 }
@@ -169,7 +214,18 @@ export async function setReceivedColor(prevState, formData) {
     const saved = await setSettingCookie(prevState, 'color_recieved', color);
     revalidatePath('/settings');
     return saved;
-  } catch {
+  } catch (e) {
+    return prevState;
+  }
+}
+
+export async function resetReceivedColor(prevState, _formData) {
+  try {
+    const store = await cookies();
+    store.delete('color_recieved');
+    revalidatePath('/settings');
+    return '';
+  } catch (e) {
     return prevState;
   }
 }

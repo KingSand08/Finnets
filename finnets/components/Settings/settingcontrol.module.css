@@ -1,6 +1,6 @@
 .selection_container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 0.7fr 1.4fr;
   justify-content: space-around;
   gap: 10em;
   width: 100%;
@@ -25,6 +25,30 @@
   .selection_container form {
     justify-content: center;
   }
+}
+
+.selection_area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+}
+
+.reset_button {
+  background: none;
+  border: none;
+  transition: transform 0.2s;
+}
+
+.reset_button:hover {
+  background: none;
+  border: none;
+  transform: rotate(-45deg);
+}
+.reset_button:active {
+  background: none;
+  border: none;
+  transform: rotate(-360deg);
 }
 
 .switch {
