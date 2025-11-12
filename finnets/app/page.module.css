@@ -21,12 +21,13 @@
   display: flex;
   min-height: 100vh;
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: flex-start;
   background-color: var(--foreground);
-  padding: 120px 60px;
+  padding: 60px 60px;
+  gap: 40px;
 }
 
 .intro {
@@ -109,6 +110,7 @@ a.secondary {
 @media (max-width: 600px) {
   .main {
     padding: 48px 24px;
+    gap: 32px;
   }
 
   .intro {
@@ -120,6 +122,196 @@ a.secondary {
     line-height: 40px;
     letter-spacing: -1.92px;
   }
+
+  .section_title {
+    font-size: 24px;
+  }
+
+  .total_balance {
+    padding: 16px 20px;
+  }
+
+  .total_label {
+    font-size: 16px;
+  }
+
+  .total_amount {
+    font-size: 28px;
+  }
+
+  .account_card {
+    padding: 16px 20px;
+  }
+
+  .account_balance {
+    font-size: 20px;
+  }
+
+  .advice_card {
+    padding: 16px 20px;
+  }
+
+  .advice_text {
+    font-size: 15px;
+  }
+}
+
+/* Content wrapper */
+.content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* Accounts Section */
+.accounts_section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.section_title {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.total_balance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  color: white;
+}
+
+.total_label {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.total_amount {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.accounts_list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.account_card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.account_card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.account_header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.account_type {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+}
+
+.account_number {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.account_balance {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Advice Section */
+.advice_section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.advice_messages {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.advice_card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-left: 4px solid #667eea;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.advice_card:hover {
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+  transform: translateX(4px);
+}
+
+.advice_icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.advice_text {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* Login prompt and error messages */
+.login_prompt {
+  font-size: 18px;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.error_message,
+.no_accounts {
+  font-size: 16px;
+  color: #dc3545;
+  padding: 16px;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.no_accounts {
+  color: var(--text-secondary);
+  background-color: #f8f9fa;
+  border-color: #e9ecef;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -129,13 +321,27 @@ a.secondary {
 
   .page {
     --background: #000;
-    --foreground: #000;
+    --foreground: #1a1a1a;
 
     --text-primary: #ededed;
     --text-secondary: #999;
 
     --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-    --button-secondary-border: #1a1a1a;
+    --button-secondary-hover: #2a2a2a;
+    --button-secondary-border: #2a2a2a;
+  }
+
+  .account_card {
+    background-color: #2a2a2a;
+    border-color: #3a3a3a;
+  }
+
+  .advice_card {
+    background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+  }
+
+  .no_accounts {
+    background-color: #2a2a2a;
+    border-color: #3a3a3a;
   }
 }
