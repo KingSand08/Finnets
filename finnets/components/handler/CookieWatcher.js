@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 
 const CookieWatcher = ({
   cookieName,
@@ -10,7 +10,7 @@ const CookieWatcher = ({
 }) => {
   const lastApplied = useRef(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const root = document.documentElement;
 
     const isContrastEnabled = () => {

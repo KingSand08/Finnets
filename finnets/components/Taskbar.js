@@ -9,10 +9,10 @@ const Taskbar = () => {
     <>
       <div className={style.taskbar_container} />
       <div className={style.taskbar}>
-        <a href={`${baseURL}/`}>
+        <Link href={`${baseURL}/`}>
           <SvgComponent src='/icons/home.svg' />
           <p>Home</p>
-        </a>
+        </Link>
         <Link href={`${baseURL}/chat`}>
           <SvgComponent src='/icons/chat.svg' />
           <p>Chat</p>
