@@ -1,6 +1,6 @@
 'use server';
 import { revalidatePath } from 'next/cache';
-import { getSettingPreference, setSettingCookie } from '../setCookie';
+import { getSettingPreference, setSettingCookie } from '../cookies/Cookie';
 
 const ENABLED = 'enabled';
 const DISABLED = 'disabled';
@@ -180,14 +180,14 @@ export async function setContrastPreference(prevState, formData) {
 }
 
 export async function getSearchPreference() {
-  const value = await getSettingPreference('contrast_pref');
+  const value = await getSettingPreference('search_pref');
   return value !== DISABLED;
 }
 
 export async function setSearchPreference(prevState, formData) {
   const enabled = formData.get('value') === 'on';
   const vars = enabled ? ENABLED : DISABLED;
-  const value = await setSettingCookie(prevState, 'contrast_pref', vars);
+  const value = await setSettingCookie(prevState, 'search_pref', vars);
   revalidatePath('/settings');
   return value;
 }

@@ -48,5 +48,5 @@
 .taskbar p {
   font-size: 0.9em;
   font-weight: bold;
-  font-family: Ubuntu, Inter, Arial, Helvetica, sans-serif;
+  font-family: var(--language-font-headers);
 }

@@ -1,18 +1,7 @@
-import { Ubuntu, Ubuntu_Mono } from 'next/font/google';
 import './globals.css';
 import Taskbar from '@/components/Taskbar';
-
-const ubuntu = Ubuntu({
-  variable: '--font-ubuntu',
-  subsets: ['latin'],
-  weight: '400',
-});
-
-const ubuntuMono = Ubuntu_Mono({
-  variable: '--font-ubuntu',
-  subsets: ['latin'],
-  weight: '400',
-});
+import CookieWatchHandler from '@/components/handler/CookieWatchHandler';
+import { ubuntu, ubuntuMono, inter, comic_neue, cormorant } from '@/lib/Fonts';
 
 export const metadata = {
   title: 'Finnets Applet',
@@ -22,7 +11,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang='en' suppressHydrationWarning>
-      <body className={`${ubuntu.variable} ${ubuntuMono.variable}`}>
+      <body
+        className={`${ubuntu.variable} ${ubuntuMono.variable} ${inter.variable} ${comic_neue.variable} ${cormorant.variable}`}
+      >
+        <CookieWatchHandler />
         <Taskbar />
         <div className='content'>{children}</div>
       </body>

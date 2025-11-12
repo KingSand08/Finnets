@@ -4,15 +4,9 @@
   --heading-text-color: #000712;
   --body-text-color: #000712;
   --button-secondary: #d1d1d1;
-  --language-font: Ubuntu, Inter, Arial, Helvetica, sans-serif;
+  --language-font-headers: Ubuntu, Arial, Helvetica, sans-serif;
+  --language-font: Ubuntu, Arial, Helvetica, sans-serif;
 }
-
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-} */
 
 html {
   height: 100%;
@@ -31,6 +25,7 @@ body {
   font-family: var(--language-font);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 300ms linear, background 300ms linear;
 }
 
 @media (max-width: 790px) {
@@ -50,7 +45,8 @@ h3,
 h4,
 h5,
 h6 {
-  color: var(--headding-text-color);
+  color: var(--heading-text-color);
+  font-family: var(--language-font-headers);
 }
 
 * {
@@ -63,9 +59,3 @@ a {
   color: inherit;
   text-decoration: none;
 }
-
-/* @media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-} */
