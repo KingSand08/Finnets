@@ -77,7 +77,6 @@ export const SettingColorControl = ({
   useEffect(() => {
     if (state)
       try {
-        console.log(baseColorCode, state);
         applyColor({ varName: baseColorCode, newColor: state });
       } catch (e) {
         console.log(e);

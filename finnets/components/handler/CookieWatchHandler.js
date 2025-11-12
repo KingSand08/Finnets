@@ -25,7 +25,6 @@ const CookieWatchHandler = async () => {
   ];
 
   const userSettingPrefs = (await cookieSettingLoad(settingsToGet)) ?? [];
-  console.log(userSettingPrefs);
 
   return (
     <>
