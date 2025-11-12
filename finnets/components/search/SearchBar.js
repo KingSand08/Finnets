@@ -1,8 +1,11 @@
-import React from 'react';
+'use client';
+import React, { useActionState } from 'react';
 import style from './searchbar.module.css';
 import SvgComponent from '../SvgComponent';
 
 const SearchBar = () => {
+  //   const [status, action, isPending] = useActionState(func, prevStatus);
+
   return (
     <div>
       <form className={style.search_container}>

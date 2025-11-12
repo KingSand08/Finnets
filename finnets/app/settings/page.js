@@ -35,6 +35,7 @@ import {
   resetReceivedColor,
   resetHeadingColor,
   resetBodyColor,
+  setFont,
 } from '@/lib/settings/settingControls';
 
 const SettingsPage = async () => {
@@ -95,7 +96,7 @@ const SettingsPage = async () => {
           <SettingControlSection>
             <h3>Fonts</h3>
             <div className={style.selection_options}>
-              <SettingSelectionControl
+              {/* <SettingSelectionControl
                 list={fonts}
                 title='Headings'
                 func={setFontHeadings}
@@ -106,19 +107,25 @@ const SettingsPage = async () => {
                 title='Body'
                 func={setFontBody}
                 prevStatus={fontBody}
+              /> */}
+              <SettingSelectionControl
+                list={fonts}
+                title='Text'
+                func={setFont}
+                prevStatus={fontBody}
               />
             </div>
           </SettingControlSection>
           <SettingControlSection>
             <h3>Colors</h3>
             <div className={style.selection_options}>
-              <SettingColorControl
+              {/* <SettingColorControl
                 title='Background'
                 func={setBackgroundColor}
                 resetFunc={resetBackgroundColor}
                 baseColorCode='--background'
                 prevStatus={colorBackground}
-              />
+              /> */}
               <SettingColorControl
                 title='Foreground'
                 func={setForegroundColor}
@@ -126,7 +133,7 @@ const SettingsPage = async () => {
                 baseColorCode='--foreground'
                 prevStatus={colorForeground}
               />
-              <SettingColorControl
+              {/* <SettingColorControl
                 title='Received Messages'
                 func={setReceivedColor}
                 resetFunc={resetReceivedColor}
@@ -146,7 +153,7 @@ const SettingsPage = async () => {
                 resetFunc={resetBodyColor}
                 baseColorCode='--body-text-color'
                 prevStatus={colorBody}
-              />
+              /> */}
             </div>
           </SettingControlSection>
         </div>

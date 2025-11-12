@@ -19,6 +19,22 @@ export async function setPrivacyPreference(prevState, formData) {
   return value;
 }
 
+export async function setFont(prevState, formData) {
+  try {
+    const font = formData.get('value');
+    if (typeof font !== 'string' || font.length === 0) return prevState;
+
+    const saved = await setSettingCookie(prevState, 'font_heading', font);
+    const saved_1 = await setSettingCookie(prevState, 'font_body', font);
+
+    revalidatePath('/settings');
+
+    return saved;
+  } catch (e) {
+    return prevState;
+  }
+}
+
 export async function setFontHeadings(prevState, formData) {
   try {
     const font = formData.get('value');
