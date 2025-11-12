@@ -73,16 +73,6 @@ export const SettingColorControl = ({
     return () => clearTimeout(id);
   }, [title, prevStatus, baseColorCode, isBaseHex]);
 
-  // Apply Color to css
-  useEffect(() => {
-    if (state)
-      try {
-        applyColor({ varName: baseColorCode, newColor: state });
-      } catch (e) {
-        console.log(e);
-      }
-  }, [baseColorCode, state]);
-
   return (
     <div className={style.selection_container}>
       <h4>{title}</h4>
