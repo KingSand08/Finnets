@@ -37,6 +37,8 @@ export default function Chat({ initial_messages, username = null }) {
             }
           );
 
+          console.log(privStatusRes);
+
           if (!privStatusRes.ok) {
             console.warn(
               'Privacy status fetch failed:',
