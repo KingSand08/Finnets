@@ -8,7 +8,7 @@ export async function setSettingCookie(prevState, name, vars) {
   try {
     // var encryptedVars = CryptoJS.AES.encrypt(vars, pass).toString();
     var encryptedVars = vars;
-    console.log('ENCRYPTION:', encryptedVars);
+    // console.log('ENCRYPTION:', encryptedVars);
     const store = await cookies();
     store.set(name, encryptedVars, {
       httpOnly: false,
@@ -17,7 +17,6 @@ export async function setSettingCookie(prevState, name, vars) {
       path: '/',
       maxAge: 60 * 60 * 24 * 365,
     });
-    console.log('GETTING HERE!');
     return vars || null;
   } catch (e) {
     console.log(e);

@@ -4,7 +4,7 @@
  * Provides global connection pooling, safe query execution, and transaction handling.
  */
 
-import mysql from "mysql2/promise";
+import mysql from 'mysql2/promise';
 
 let pool;
 
@@ -27,19 +27,16 @@ if (!global._mysqlPool) {
     .map(([key]) => key);
 
   if (missingVars.length > 0) {
-    console.error("Missing required database environment variables:", missingVars);
+    console.error(
+      'Missing required database environment variables:',
+      missingVars
+    );
     throw new Error(
-      `Missing required database environment variables: ${missingVars.join(", ")}`
+      `Missing required database environment variables: ${missingVars.join(
+        ', '
+      )}`
     );
   }
-
-  console.log("Creating MySQL pool with config:", {
-    host: requiredEnvVars.DB_HOST,
-    port: Number(requiredEnvVars.DB_PORT),
-    database: requiredEnvVars.DB_NAME,
-    user: requiredEnvVars.DB_USER,
-    password: requiredEnvVars.DB_PASS ? "***" : undefined,
-  });
 
   global._mysqlPool = mysql.createPool({
     host: requiredEnvVars.DB_HOST,
@@ -72,16 +69,16 @@ pool = global._mysqlPool;
 export const executeQuery = async (query, data) => {
   try {
     if (!pool) {
-      throw new Error("Database pool is not initialized");
+      throw new Error('Database pool is not initialized');
     }
     const [result] = await pool.execute(query, data);
     return result;
   } catch (error) {
-    console.error("Query Error:", error.message);
-    console.error("Query:", query);
-    console.error("Data:", data);
+    console.error('Query Error:', error.message);
+    console.error('Query:', query);
+    console.error('Data:', data);
     if (error.code) {
-      console.error("Error Code:", error.code);
+      console.error('Error Code:', error.code);
     }
     throw error;
   }
@@ -98,7 +95,7 @@ export const executeTransaction = async (queries) => {
     return { success: true };
   } catch (error) {
     await connection.rollback();
-    console.error("Transaction Error:", error.message);
+    console.error('Transaction Error:', error.message);
     return { success: false, error };
   } finally {
     connection.release();

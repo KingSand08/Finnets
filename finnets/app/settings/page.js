@@ -28,6 +28,13 @@ import {
   setContrastPreference,
   setSearchPreference,
   getSearchPreference,
+  getReceivedColor,
+  setReceivedColor,
+  resetBackgroundColor,
+  resetForegroundColor,
+  resetReceivedColor,
+  resetHeadingColor,
+  resetBodyColor,
 } from '@/lib/settings/settingControls';
 
 const SettingsPage = async () => {
@@ -45,6 +52,7 @@ const SettingsPage = async () => {
   const langPref = await getLanguagePreference();
   const constrastPref = await getContrastPreference();
   const searchPref = await getSearchPreference();
+  const colorReceived = await getReceivedColor();
 
   return (
     <div className={style.page}>
@@ -107,24 +115,35 @@ const SettingsPage = async () => {
               <SettingColorControl
                 title='Background'
                 func={setBackgroundColor}
+                resetFunc={resetBackgroundColor}
                 baseColorCode='--background'
                 prevStatus={colorBackground}
               />
               <SettingColorControl
                 title='Foreground'
                 func={setForegroundColor}
+                resetFunc={resetForegroundColor}
                 baseColorCode='--foreground'
                 prevStatus={colorForeground}
               />
               <SettingColorControl
+                title='Received Messages'
+                func={setReceivedColor}
+                resetFunc={resetReceivedColor}
+                baseColorCode='--received-color'
+                prevStatus={colorReceived}
+              />
+              <SettingColorControl
                 title='Heading'
                 func={setHeadingColor}
+                resetFunc={resetHeadingColor}
                 baseColorCode='--heading-text-color'
                 prevStatus={colorHeadings}
               />
               <SettingColorControl
                 title='Body'
                 func={setBodyColor}
+                resetFunc={resetBodyColor}
                 baseColorCode='--body-text-color'
                 prevStatus={colorBody}
               />

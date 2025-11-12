@@ -1,15 +1,15 @@
-import { getSettingPreference, setSettingCookie } from './Cookie';
+import { getSettingPreference } from './Cookie';
 
 export async function cookieSettingLoad(settings) {
   const results = await Promise.all(
-    settings.map(async ({ name, def, cssName }) => {
+    settings.map(async ({ name, def, cssName, contrastVal }) => {
       const cookiePref = (await getSettingPreference(name)) ?? null;
-      // console.log('{', name, ': ', cookiePref, '}', '|| def: ', def);
       return {
         name: name,
         val: cookiePref,
         def: def,
         cssName: cssName ?? null,
+        contrastVal: contrastVal ?? null,
       };
     })
   );

@@ -3,6 +3,7 @@ import React, { useState, useEffect, useActionState } from 'react';
 import style from './settingcontrol.module.css';
 import DeleteButton from './DeleteButton';
 import { applyColor } from '@/lib/settings/applyUISetting';
+import SvgComponent from '../SvgComponent';
 
 export const SettingSelectionControl = ({
   title,
@@ -36,6 +37,7 @@ export const SettingSelectionControl = ({
 export const SettingColorControl = ({
   title,
   func,
+  resetFunc,
   baseColorCode,
   prevStatus,
 }) => {
@@ -73,37 +75,33 @@ export const SettingColorControl = ({
     return () => clearTimeout(id);
   }, [title, prevStatus, baseColorCode, isBaseHex]);
 
-  // Apply Color to css
-  useEffect(() => {
-    if (state)
-      try {
-        console.log(baseColorCode, state);
-        applyColor({ varName: baseColorCode, newColor: state });
-      } catch (e) {
-        console.log(e);
-      }
-  }, [baseColorCode, state]);
-
   return (
     <div className={style.selection_container}>
       <h4>{title}</h4>
-      <form action={action} className={style.color_control}>
-        <label>
-          <span suppressHydrationWarning>{color}</span>
-        </label>
-        <input
-          type='color'
-          id='myColorPicker'
-          name='userColor'
-          value={color || '#000000'}
-          onChange={(e) => {
-            const next = e.target.value;
-            setColor(next);
-            e.currentTarget.form?.requestSubmit();
-          }}
-          disabled={isPending}
+      <div className={style.selection_area}>
+        <ResetColorButton
+          resetAction={resetFunc}
+          defaultValue={baseColorCode}
+          onResetClient={setColor}
         />
-      </form>
+        <form action={action} className={style.color_control}>
+          <label>
+            <span suppressHydrationWarning>{color}</span>
+          </label>
+          <input
+            type='color'
+            id='myColorPicker'
+            name='userColor'
+            value={color || '#000000'}
+            onChange={(e) => {
+              const next = e.target.value;
+              setColor(next);
+              e.currentTarget.form?.requestSubmit();
+            }}
+            disabled={isPending}
+          />
+        </form>
+      </div>
     </div>
   );
 };
@@ -156,3 +154,43 @@ export const DeleteButtonSection = () => {
     </div>
   );
 };
+
+export default function ResetColorButton({
+  resetAction,
+  defaultValue,
+  onResetClient,
+}) {
+  const [submitting, setSubmitting] = useState(false);
+
+  const computeDefaultHex = () => {
+    if (typeof defaultValue === 'string' && defaultValue.startsWith('#'))
+      return defaultValue;
+    if (typeof defaultValue === 'string' && defaultValue) {
+      const root = document.documentElement;
+      const v = getComputedStyle(root).getPropertyValue(defaultValue).trim();
+      return v || '#000000';
+    }
+    return '#000000';
+  };
+
+  return (
+    <form
+      action={async (formData) => {
+        setSubmitting(true);
+        const next = computeDefaultHex();
+        onResetClient?.(next);
+        await resetAction('', formData);
+        setSubmitting(false);
+      }}
+    >
+      <input type='hidden' name='intent' value='reset' />
+      <button
+        type='submit'
+        disabled={submitting}
+        className={style.reset_button}
+      >
+        <SvgComponent src='/icons/reset.svg' color='--foreground' />
+      </button>
+    </form>
+  );
+}

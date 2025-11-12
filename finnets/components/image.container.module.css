@@ -2,5 +2,4 @@
   width: var(--nav-button-size);
   height: var(--nav-button-size);
   display: inline-block;
-  background-color: var(--background); /* color! */
 }

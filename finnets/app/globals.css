@@ -6,6 +6,8 @@
   --button-secondary: #d1d1d1;
   --language-font-headers: Ubuntu, Arial, Helvetica, sans-serif;
   --language-font: Ubuntu, Arial, Helvetica, sans-serif;
+  --received-color: #d0d0d0;
+  --nav-button-size: 10px;
 }
 
 html {
