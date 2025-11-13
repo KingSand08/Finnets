@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useActionState } from 'react';
 import style from './settingcontrol.module.css';
 import DeleteButton from './DeleteButton';
-import { applyColor } from '@/lib/settings/applyUISetting';
 import SvgComponent from '../SvgComponent';
 
 export const SettingSelectionControl = ({

@@ -1,10 +1,3 @@
-:root {
-  --taskbar-container-offset: 2.4em;
-  --taskbar-size-h: 0em;
-  --taskbar-size-w: 8em;
-  --nav-button-size: 1.4em;
-}
-
 .taskbar_container {
   position: relative;
   height: calc(var(--taskbar-container-offset) + var(--taskbar-size-h));
@@ -23,14 +16,6 @@
   justify-content: space-between;
   border-radius: 0 0 40px 40px;
   z-index: 1000;
-}
-
-@media (max-width: 800px) {
-  :root {
-    --taskbar-size-h: 0em;
-    --taskbar-size-w: 2em;
-    --nav-button-size: 2em;
-  }
 }
 
 .taskbar a {
