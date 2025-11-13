@@ -1,0 +1,48 @@
+Finnets Chat — Restricted License (Permission Required)
+Version 1.0 — 2025-11-12
+
+Copyright (c) 2025 Finnets Chat authors. All rights reserved.
+
+1. Ownership
+   The software, source code, documentation, and all associated materials (the “Software”) are
+   the exclusive property of the copyright holders listed above.
+
+2. No License Granted (Use Prohibited Without Written Permission)
+   Except as expressly authorized in a separate, prior written agreement from the copyright
+   holders (“Permission”), you are NOT permitted to:
+   • use, run, host, or deploy the Software;
+   • copy, reproduce, or distribute the Software or any portion thereof;
+   • modify, adapt, translate, or create derivative works from the Software;
+   • use the Software in any private/personal projects;
+   • use the Software in any commercial or business context;
+   • sublicense, sell, rent, lease, or otherwise transfer any rights in the Software.
+
+   In other words: this repository is NOT licensed for free or open use. You must obtain explicit
+   written Permission before any use beyond viewing the repository contents.
+
+3. Limited Right to View
+   You may view the publicly available source files of the Software solely for the purpose of
+   evaluating the project. No other rights are granted, either express or implied.
+
+4. Permission Requests
+   To request Permission, open an issue in this repository or contact the maintainers at:
+   <your-contact@example.com>
+   (Replace with your team’s preferred contact method.)
+
+5. Trademarks
+   Any names, logos, or trademarks included with the Software are the property of their respective
+   owners. No rights are granted to use any trademarks, service marks, or trade names.
+
+6. No Warranty
+   THE SOFTWARE IS PROVIDED “AS IS” AND WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+   INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+   PURPOSE, AND NON-INFRINGEMENT.
+
+7. Limitation of Liability
+   IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY CLAIM, DAMAGES,
+   OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM,
+   OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+8. Termination
+   Any actual or attempted use of the Software without prior written Permission immediately
+   terminates any limited rights described herein.
