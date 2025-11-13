@@ -3,7 +3,7 @@ import style from '@/components/chat.module.css';
 import Image from 'next/image';
 import { useState, useRef } from 'react';
 
-export default function Chat({ initial_messages, username = null }) {
+export default function Chat({ initial_messages, username = null, basePath }) {
   const [messages, setMessages] = useState(initial_messages);
   const inputRef = useRef(null);
 
@@ -20,7 +20,7 @@ export default function Chat({ initial_messages, username = null }) {
 
   const SendChatPrompt = async (userText) => {
     try {
-      const basePath = process.env.NODE_ENV === 'production' ? '/finnets/' : '';
+      console.log('CLIENT: ', basePath);
 
       let context = '';
       let accessBlocked = false;
@@ -30,7 +30,7 @@ export default function Chat({ initial_messages, username = null }) {
         if (typeof document === 'undefined') return true; // Default to enabled on server
         try {
           const privStatusRes = await fetch(
-            `${basePath}api/watsonx/getPrivacyStatus`,
+            `${basePath}/api/watsonx/getPrivacyStatus`,
             {
               cache: 'no-store',
               credentials: 'include',
@@ -327,7 +327,7 @@ export default function Chat({ initial_messages, username = null }) {
           context,
         }),
       });
-
+      console.log(response);
       if (!response.ok) {
         console.error('API error:', response.status, response.statusText);
         setIsLoading(false);
