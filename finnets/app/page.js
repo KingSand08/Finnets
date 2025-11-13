@@ -14,6 +14,9 @@ export default async function Home() {
   let adviceMessages = [];
   let hasError = false;
 
+  const chatLink =
+    process.env.NODE_ENV === 'production' ? '/finnets/chat' : '/chat';
+
   // Get session from cookie
   const sessionCookie = await getSessionFromCookie();
 
@@ -27,10 +30,12 @@ export default async function Home() {
         // Construct absolute URL for server-side fetch
         const headersList = await headers();
         const host = headersList.get('host') || 'localhost:3001';
-        const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-        const basePath = process.env.NODE_ENV === 'production' ? '/finnets' : '';
+        const protocol =
+          process.env.NODE_ENV === 'production' ? 'https' : 'http';
+        const basePath =
+          process.env.NODE_ENV === 'production' ? '/finnets' : '';
         const apiUrl = `${protocol}://${host}${basePath}/api/bank_database/getAccounts?username=${username}`;
-        
+
         const accountsResponse = await fetch(apiUrl, {
           cache: 'no-store',
           headers: {
@@ -40,6 +45,8 @@ export default async function Home() {
 
         if (accountsResponse.ok) {
           const accountsData = await accountsResponse.json();
+          console.log(accountsData);
+
           if (accountsData.success && accountsData.data) {
             accounts = accountsData.data;
             // Generate financial advice messages
@@ -87,7 +94,10 @@ export default async function Home() {
                   </div>
                   <div className={styles.accounts_list}>
                     {accounts.map((account) => (
-                      <div key={account.account_number} className={styles.account_card}>
+                      <div
+                        key={account.account_number}
+                        className={styles.account_card}
+                      >
                         <div className={styles.account_header}>
                           <span className={styles.account_type}>
                             {account.account_type?.toUpperCase() || 'ACCOUNT'}
@@ -105,7 +115,8 @@ export default async function Home() {
                 </>
               ) : (
                 <p className={styles.no_accounts}>
-                  No accounts found. Please contact support if you believe this is an error.
+                  No accounts found. Please contact support if you believe this
+                  is an error.
                 </p>
               )}
             </section>
@@ -127,7 +138,7 @@ export default async function Home() {
 
             {/* Chat Link */}
             <div className={styles.ctas}>
-              <Link href="/finnets/chat" className={styles.primary}>
+              <Link href={chatLink} className={styles.primary}>
                 Chat with Finnet Bot
               </Link>
             </div>
@@ -138,7 +149,7 @@ export default async function Home() {
               Please log in to view your accounts and financial insights.
             </p>
             <div className={styles.ctas}>
-              <Link href="/finnets/chat" className={styles.secondary}>
+              <Link href='/finnets/chat' className={styles.secondary}>
                 Finnet Bot Chat
               </Link>
             </div>

@@ -1,6 +1,5 @@
 .page {
   --background: #fafafa;
-  --foreground: #fff;
 
   --text-primary: #000;
   --text-secondary: #666;
@@ -8,24 +7,16 @@
   --button-primary-hover: #383838;
   --button-secondary-hover: #f2f2f2;
   --button-secondary-border: #ebebeb;
-
-  display: flex;
-  min-height: 100vh;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-geist-sans);
-  background-color: var(--background);
+  font-family: var(--language-font);
 }
 
 .main {
   display: flex;
-  min-height: 100vh;
+  min-height: 100%;
   width: 100%;
-  max-width: 1000px;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  background-color: var(--foreground);
   padding: 60px 60px;
   gap: 40px;
 }
@@ -85,7 +76,7 @@
 }
 
 a.primary {
-  background: var(--text-primary);
+  background: var(--foreground);
   color: var(--background);
   gap: 8px;
 }
@@ -99,12 +90,19 @@ a.secondary {
   a.primary:hover {
     background: var(--button-primary-hover);
     border-color: transparent;
+    transform: translateY(-0.1em);
   }
 
   a.secondary:hover {
     background: var(--button-secondary-hover);
     border-color: transparent;
   }
+}
+
+a.primary:active {
+  background: var(--button-primary-hover);
+  border-color: transparent;
+  transform: translateY(0.1em);
 }
 
 @media (max-width: 600px) {
@@ -211,7 +209,7 @@ a.secondary {
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  background-color: #f8f9fa;
+  background-color: #e1eaf3;
   border: 1px solid #e9ecef;
   border-radius: 8px;
   transition: all 0.2s ease;
@@ -266,7 +264,7 @@ a.secondary {
   align-items: flex-start;
   gap: 16px;
   padding: 20px 24px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #dce9fc 0%, #c3cfe2 100%);
   border-left: 4px solid #667eea;
   border-radius: 8px;
   transition: all 0.2s ease;
@@ -312,36 +310,4 @@ a.secondary {
   color: var(--text-secondary);
   background-color: #f8f9fa;
   border-color: #e9ecef;
-}
-
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
-  }
-
-  .page {
-    --background: #000;
-    --foreground: #1a1a1a;
-
-    --text-primary: #ededed;
-    --text-secondary: #999;
-
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #2a2a2a;
-    --button-secondary-border: #2a2a2a;
-  }
-
-  .account_card {
-    background-color: #2a2a2a;
-    border-color: #3a3a3a;
-  }
-
-  .advice_card {
-    background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
-  }
-
-  .no_accounts {
-    background-color: #2a2a2a;
-    border-color: #3a3a3a;
-  }
 }
