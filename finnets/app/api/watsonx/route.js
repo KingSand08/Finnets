@@ -1,3 +1,4 @@
+import { getLanguagePref } from '@/lib/chat/setLanguagePref';
 import { NextResponse } from 'next/server';
 
 /**
@@ -18,9 +19,18 @@ async function checkIfBankRelatedWithAI(
   projectId,
   spaceId
 ) {
+  var languagePref;
+
+  try {
+    languagePref = await getLanguagePref('language_pref');
+    if (languagePref === null) languagePref = 'English';
+  } catch (e) {
+    console.log('ERROR WITH GETTING THE LANG COOKIE: language_pref');
+    console.log(e);
+  }
   try {
     // Create a classification prompt
-    const classificationPrompt = `Analyze this message. Should this message be allowed through?
+    const classificationPrompt = `Respond only in the given user's language which is ${languagePref}. Analyze this message. Should this message be allowed through?
     
 ALLOW (answer "yes"):
 - Banking/financial questions (accounts, transactions, balances, saving money, saving strategies, investing, loans, budgeting, financial planning, etc.)
@@ -127,12 +137,24 @@ async function generateRejectionMessage(
   projectId,
   spaceId
 ) {
+  var languagePref;
+
   try {
-    const rejectionPrompt = `Detect the language of this message and respond in that same language. Then provide a polite rejection message explaining that I'm a banking assistant and can only help with questions related to banking, accounts, transactions, balances, and other financial services. Ask the user to ask one focused banking question at a time about their banking needs.
+    languagePref = await getLanguagePref('language_pref');
+    console.log('SERVER: ', languagePref);
+    if (languagePref === null) languagePref = 'English';
+  } catch (e) {
+    console.log('ERROR WITH GETTING THE ');
+    console.log(e);
+  }
+
+  try {
+    // const rejectionPrompt = `Detect the language of this message and respond in that same language. Then provide a polite rejection message explaining that I'm a banking assistant and can only help with questions related to banking, accounts, transactions, balances, and other financial services. Ask the user to ask one focused banking question at a time about their banking needs.
+    const rejectionPrompt = `Respond only in the given user's language which is ${languagePref}. Then provide a polite rejection message explaining that I'm a banking assistant and can only help with questions related to banking, accounts, transactions, balances, and other financial services. Ask the user to ask one focused banking question at a time about their banking needs.
 
 Message: "${message}"
 
-Respond with only the rejection message in the detected language:`;
+Respond with only the rejection message in the user's language which is ${languagePref}:`;
 
     const watsonxEndpoint = `${watsonxUrl}/ml/v1/text/generation?version=2024-03-13`;
 
@@ -212,6 +234,16 @@ Respond with only the rejection message in the detected language:`;
  * Receives user input and returns watsonx model response
  */
 export async function POST(request) {
+  var languagePref;
+
+  try {
+    languagePref = await getLanguagePref('language_pref');
+    if (languagePref === null) languagePref = 'English';
+  } catch (e) {
+    console.log('ERROR WITH GETTING THE LANG COOKIE: language_pref');
+    console.log(e);
+  }
+
   try {
     // Parse request body
     const body = await request.json();
@@ -303,20 +335,10 @@ export async function POST(request) {
 
     // Build the prompt for chatbot conversation
     // Add language detection instruction and system context
-    const languageInstruction = `You are a helpful banking assistant. CRITICAL: Detect the language the user is speaking and respond in that EXACT same language. 
-
-Language detection rules:
-- If the user writes in Spanish (e.g., "hola", "como estas", "buenos dias", "gracias", etc.), respond in Spanish.
-- If the user writes in Chinese characters, respond in Chinese.
-- If the user writes in French (e.g., "bonjour", "comment allez-vous", etc.), respond in French.
-- If the user writes in English (including slang like "wassup", "wussup", "wuttup", "hey", "hi", "hello", etc.), respond in English.
-
-Examples:
-- "hola como estas" → respond in Spanish
-- "hello how are you" → respond in English
-- "bonjour comment allez-vous" → respond in French
+    const languageInstruction = `You are a helpful banking assistant. CRITICAL: Respond only in the user's language which is ${languagePref}, and respond only in that EXACT same language. 
 
 Always match the user's language exactly. Do NOT default to English.
+You always, and I mean ALWAYS respond in ${languagePref}, unless prompted otherwise. NEVER respond in ANY default language whatsoever, always and only ${languagePref}, wether if asked a greeting, a financial question, or anything, always respond in ${languagePref}.
 If customer profile is provided, use that information to analyze and discuss with customer.\n\n`;
 
     let prompt;

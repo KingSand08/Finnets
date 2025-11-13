@@ -63,7 +63,7 @@ const SettingsPage = async () => {
         <div className={style.section}>
           <h2>Finnet Privacy Control</h2>
           <SettingControlSection>
-            <h3>AI Data Access</h3>
+            {/* <h3>AI Data Access</h3> */}
             <div className={style.selection_options}>
               <SettingSwitchControl
                 title='Allow AI to access my bank data'
@@ -162,20 +162,15 @@ const SettingsPage = async () => {
           <SettingControlSection>
             <div className={style.selection_options}>
               <SettingSwitchControl
-                title='Enable Language Switch Button'
-                func={setLanguagePreference}
-                prevStatus={langPref}
-              />
-              <SettingSwitchControl
                 title='Enable High Contrast Mode'
                 func={setContrastPreference}
                 prevStatus={constrastPref}
               />
-              <SettingSwitchControl
+              {/* <SettingSwitchControl
                 title='Enable Page Searching'
                 func={setSearchPreference}
                 prevStatus={searchPref}
-              />
+              /> */}
             </div>
           </SettingControlSection>
         </div>

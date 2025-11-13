@@ -16,7 +16,7 @@ export async function setLanguagePref(prevState, formData) {
 export async function getLanguagePref() {
   try {
     const v = await getSettingPreference('language_pref');
-    return v;
+    return v.replace(/%20/g, ' ') || null;
   } catch (e) {
     return null;
   }

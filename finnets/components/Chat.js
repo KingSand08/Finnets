@@ -26,7 +26,7 @@ export default function Chat({ initial_messages, username = null }) {
       let accessBlocked = false;
 
       // Check privacy preference first - before making any API calls
-      const checkPrivacyPreference = async () => {
+      const checkPrivacyPref = async () => {
         if (typeof document === 'undefined') return true; // Default to enabled on server
         try {
           const privStatusRes = await fetch(
@@ -69,7 +69,7 @@ export default function Chat({ initial_messages, username = null }) {
         }
       };
 
-      const privacyAllowed = await checkPrivacyPreference();
+      const privacyAllowed = await checkPrivacyPref();
 
       if (usernameRef.current && privacyAllowed) {
         // Fetch fresh banking data for each message
