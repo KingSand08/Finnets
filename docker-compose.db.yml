@@ -11,13 +11,12 @@ services:
       - db_data:/var/lib/mysql
     ports:
       - "3306:3306"
-    networks:
-      - bank_shared_net
+    # networks:
+    #   - bank_shared_net
 
 volumes:
   db_data:
-
-networks:
-  bank_shared_net:
-    external: true
-    name: bank_shared_net
+# networks:
+#   bank_shared_net:
+#     external: true
+#     name: bank_shared_net

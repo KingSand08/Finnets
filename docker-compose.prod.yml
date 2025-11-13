@@ -28,7 +28,7 @@ services:
     command: sh -c "npm i --no-save && npm run build && npm run start"
     depends_on:
       - mock_bank
-    networks: [bank_prod_net, bank_shared_net]
+    # networks: [bank_prod_net, bank_shared_net]
 
   mock_bank:
     build:
@@ -55,7 +55,7 @@ services:
       - ./mock_bank/middleware.js:/mock_bank/middleware.js
     working_dir: /mock_bank
     command: sh -c "npm i --no-save && npm run build && npm run start"
-    networks: [bank_prod_net, bank_shared_net]
+    # networks: [bank_prod_net, bank_shared_net]
 
   nginx:
     build:
@@ -73,10 +73,9 @@ services:
     depends_on:
       - mock_bank
       - finnets
-    networks: [bank_prod_net]
-
-networks:
-  bank_prod_net: {}
-  bank_shared_net:
-    external: true
-    name: bank_shared_net
+    # networks: [bank_prod_net]
+# networks:
+#   bank_prod_net: {}
+#   bank_shared_net:
+#     external: true
+#     name: bank_shared_net
