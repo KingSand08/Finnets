@@ -11,8 +11,22 @@ const PUBLIC_PATHS = [
 
 export async function middleware(request) {
   if (process.env.NODE_ENV === 'production') {
-    const secSite = await secureSite(request);
-    return secSite ?? NextResponse.next();
+    const url = request.nextUrl.pathname;
+    const isPublicPath = PUBLIC_PATHS.some((regex) => regex.test(url));
+    if (isPublicPath) {
+      return NextResponse.next();
+    }
+    const secretHeader = request.headers.get('x-internal-secret');
+    if (secretHeader !== INTERNAL_SECRET) {
+      console.error(
+        `ACCESS DENIED: Invalid or missing X-Internal-Secret for path: ${url}`
+      );
+      return new NextResponse('Jared Grace, leave this place', {
+        status: 404,
+        headers: { 'Content-Type': 'text/plain' },
+      });
+    }
+    return NextResponse.next();
   }
 }
 

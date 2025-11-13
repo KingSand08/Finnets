@@ -32,8 +32,7 @@ export default async function Home() {
         const host = headersList.get('host') || 'localhost:3001';
         const protocol =
           process.env.NODE_ENV === 'production' ? 'https' : 'http';
-        const basePath =
-          process.env.NODE_ENV === 'production' ? '/finnets' : '';
+        const basePath = process.env.NODE_ENV === 'production' ? 'finnets' : '';
         const apiUrl = `${protocol}://${host}${basePath}/api/bank_database/getAccounts?username=${username}`;
 
         const accountsResponse = await fetch(apiUrl, {
