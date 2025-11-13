@@ -29,6 +29,10 @@ export default function Chat({ initial_messages, username = null, basePath }) {
       const checkPrivacyPref = async () => {
         if (typeof document === 'undefined') return true; // Default to enabled on server
         try {
+          console.log(
+            'PRIV FETCH API ROUTE: ',
+            `${basePath}/api/watsonx/getPrivacyStatus`
+          );
           const privStatusRes = await fetch(
             `${basePath}/api/watsonx/getPrivacyStatus`,
             {

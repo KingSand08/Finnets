@@ -39,10 +39,6 @@ export async function GET(request) {
     if (cookieHeader) {
       headers['Cookie'] = cookieHeader;
     }
-    console.log(
-      'BANK API TEST: ',
-      `${bankApiUrl}/api/bank/accounts?username=${username}`
-    );
     const response = await fetch(
       `${bankApiUrl}/api/bank/accounts?username=${username}`,
       {
