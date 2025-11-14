@@ -95,11 +95,6 @@ cd ./config
 ./start-all.sh
 ```
 
-- **Production/Development demo**: open **http://localhost:3000**
-- Make sure that only one container (production/development) is on at a time!
-
-To run **only the production demo**:
-
 ### Unix
 ```bash
 cd ./config
@@ -140,7 +135,12 @@ And ensure that you do them in the right order!
 ---
 
 ## Using the app
-
+- **Production/Development demo**: open **http://localhost:3000**
+- Make sure that only one container (production/development) is on at a time!
+- When you get to the bank page, login with either of these accounts:
+    - janesmith   jane.smith@example.com  password123
+    - johndoe     john.doe@example.com    password123
+### App Features to Try
 - **Language & theme**  
   Use the Chat **Language** button to pick one of ~50 most used world languages. Change **accent color**, **font**, and toggle **contrast mode** in **Settings**.
 
