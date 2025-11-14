@@ -90,11 +90,6 @@ You can run helper scripts or Compose files directly.
 
 From the repo root:
 
-```bash
-cd ./config
-./start-all.sh
-```
-
 ### Unix
 ```bash
 cd ./config
