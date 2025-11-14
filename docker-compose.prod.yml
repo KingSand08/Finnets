@@ -10,7 +10,6 @@ services:
     environment:
       - APP_NAME=finnets
       - NODE_ENV=production
-      - INTERNAL_SECRET=${INTERNAL_SECRET}
     ports:
       - "3001:3001"
     volumes:
@@ -57,23 +56,6 @@ services:
     command: sh -c "npm i --no-save && npm run build && npm run start"
     networks: [bank_prod_net, bank_shared_net]
 
-  # nginx:
-  #   build:
-  #     context: ./nginx
-  #     args:
-  #       - INTERNAL_SECRET=${INTERNAL_SECRET}
-  #   image: finnets-nginx:local
-  #   container_name: nginx.build
-  #   env_file:
-  #     - ./.env
-  #   environment:
-  #     - INTERNAL_SECRET=${INTERNAL_SECRET}
-  #   ports:
-  #     - "8080:80"
-  #   depends_on:
-  #     - mock_bank
-  #     - finnets
-  #   networks: [bank_prod_net]
 networks:
   bank_prod_net: {}
   bank_shared_net:
