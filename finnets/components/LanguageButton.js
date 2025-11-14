@@ -27,7 +27,6 @@ const LanguageButton = ({ supportedLangs = [{ language: 'English' }] }) => {
                   key={lang.language}
                   action={async (formData) => {
                     const status = await setLanguagePref('', formData);
-                    console.log(status);
                     setOpen(false);
                   }}
                   className={style.form}

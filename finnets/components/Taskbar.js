@@ -3,21 +3,19 @@ import style from './taskbar.module.css';
 import SvgComponent from './SvgComponent';
 
 const Taskbar = () => {
-  const baseURL = process.env.NODE_ENV === 'production' ? '/finnets' : '';
-
   return (
     <>
       <div className={style.taskbar_container} />
       <div className={style.taskbar}>
-        <Link href={`${baseURL}/`}>
-          <SvgComponent src='/icons/home.svg' />
+        <Link href={`/`}>
+          <SvgComponent src='/icons/home.svg' prefetch={false} />
           <p>Home</p>
         </Link>
-        <Link href={`${baseURL}/chat`}>
-          <SvgComponent src='/icons/chat.svg' />
+        <Link href={`/chat`}>
+          <SvgComponent src='/icons/chat.svg' prefetch={false} />
           <p>Chat</p>
         </Link>
-        <Link href={`${baseURL}/settings`}>
+        <Link href={`/settings`} prefetch={false}>
           <SvgComponent src='/icons/settings.svg' />
           <p>Settings</p>
         </Link>

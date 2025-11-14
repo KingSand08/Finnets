@@ -4,15 +4,14 @@ services:
     build:
       context: ./finnets
       dockerfile: ./docker/Dockerfile.dev
-    container_name: finents-prod
+    container_name: finents
     env_file:
       - ./.env
     environment:
       - APP_NAME=finnets
       - NODE_ENV=production
-      - INTERNAL_SECRET=${INTERNAL_SECRET}
     ports:
-      - "3001"
+      - "3001:3001"
     volumes:
       - ./finnets/lib:/finnets/lib
       - ./finnets/eslint.config.mjs:/finnets/eslint.config.mjs
@@ -34,14 +33,14 @@ services:
     build:
       context: ./mock_bank
       dockerfile: ./docker/Dockerfile.dev
-    container_name: mock_bank-prod
+    container_name: mock_bank
     env_file:
       - ./.env
     environment:
       - APP_NAME=mock_bank
       - NODE_ENV=production
     ports:
-      - "3000"
+      - "3000:3000"
     volumes:
       - ./mock_bank/lib:/mock_bank/lib
       - ./mock_bank/eslint.config.mjs:/mock_bank/eslint.config.mjs
@@ -56,24 +55,6 @@ services:
     working_dir: /mock_bank
     command: sh -c "npm i --no-save && npm run build && npm run start"
     networks: [bank_prod_net, bank_shared_net]
-
-  nginx:
-    build:
-      context: ./nginx
-      args:
-        - INTERNAL_SECRET=${INTERNAL_SECRET}
-    image: finnets-nginx:local
-    container_name: nginx.build
-    env_file:
-      - ./.env
-    environment:
-      - INTERNAL_SECRET=${INTERNAL_SECRET}
-    ports:
-      - "8080:80"
-    depends_on:
-      - mock_bank
-      - finnets
-    networks: [bank_prod_net]
 
 networks:
   bank_prod_net: {}

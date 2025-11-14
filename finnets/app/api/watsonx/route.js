@@ -141,10 +141,8 @@ async function generateRejectionMessage(
 
   try {
     languagePref = await getLanguagePref('language_pref');
-    console.log('SERVER: ', languagePref);
     if (languagePref === null) languagePref = 'English';
   } catch (e) {
-    console.log('ERROR WITH GETTING THE ');
     console.log(e);
   }
 

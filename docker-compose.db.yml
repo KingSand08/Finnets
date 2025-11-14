@@ -16,7 +16,6 @@ services:
 
 volumes:
   db_data:
-
 networks:
   bank_shared_net:
     external: true

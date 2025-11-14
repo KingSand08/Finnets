@@ -6,7 +6,7 @@ const pass = process.env.FINNETS_SECRET;
 
 export async function setSettingCookie(prevState, name, vars) {
   try {
-    // var encryptedVars = CryptoJS.AES.encrypt(vars, pass).toString();
+    var encryptedVars = CryptoJS.AES.encrypt(vars, pass).toString();
     var encryptedVars = vars;
     // console.log('ENCRYPTION:', encryptedVars);
     const store = await cookies();

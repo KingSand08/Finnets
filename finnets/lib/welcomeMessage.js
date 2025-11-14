@@ -11,7 +11,7 @@ async function welcomeMessage(params) {
   if (!username) redirect('/chat');
 
   // Call the bank's API instead of direct database access
-  const bankApiUrl = process.env.BANK_API_URL || 'http://localhost:3000';
+  const bankApiUrl = process.env.BANK_API_URL_PROD || 'http://localhost:3000';
 
   try {
     const res = await fetch(

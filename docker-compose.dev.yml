@@ -55,7 +55,6 @@ services:
     working_dir: /mock_bank
     command: sh -c "npm i --no-save && npm run dev"
     networks: [bank_dev_net, bank_shared_net]
-
 networks:
   bank_dev_net: {}
   bank_shared_net:

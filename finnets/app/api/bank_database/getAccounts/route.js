@@ -18,7 +18,7 @@ export async function GET(request) {
   try {
     const bankApiUrl =
       process.env.NODE_ENV === 'production'
-        ? process.env.BANK_API_URL
+        ? process.env.BANK_API_URL_PROD
         : process.env.BANK_API_URL_DEV;
     // Forward cookies from client request to mock_bank
     const headers = {
@@ -39,7 +39,6 @@ export async function GET(request) {
     if (cookieHeader) {
       headers['Cookie'] = cookieHeader;
     }
-
     const response = await fetch(
       `${bankApiUrl}/api/bank/accounts?username=${username}`,
       {

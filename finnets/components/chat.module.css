@@ -143,7 +143,6 @@
   right: 0;
   height: var(--chat-input-h);
   background-color: var(--secondary-background);
-  mix-blend-mode: multiply;
   display: flex;
   gap: 1em;
   align-items: center;

@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+# Start up the db and db network
 if docker network inspect bank_shared_net >/dev/null 2>&1; then
   echo "bank_shared_net already exists"
   docker compose --env-file ../.env -f ../docker-compose.db.yml up --build -d
