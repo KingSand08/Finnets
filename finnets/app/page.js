@@ -14,8 +14,13 @@ export default async function Home() {
   let adviceMessages = [];
   let hasError = false;
 
+  const baseURL =
+    process.env.NODE_ENV === 'production'
+      ? process.env.FINNETS_URL_PROD
+      : process.env.FINNETS_URL_DEV;
+
   const chatLink =
-    process.env.NODE_ENV === 'production' ? '/finnets/chat' : '/chat';
+    process.env.NODE_ENV === 'production' ? `${baseURL}/chat` : '/chat';
 
   // Get session from cookie
   const sessionCookie = await getSessionFromCookie();
@@ -34,7 +39,7 @@ export default async function Home() {
           process.env.NODE_ENV === 'production' ? 'https' : 'http';
         const basePath =
           process.env.NODE_ENV === 'production' ? '/finnets' : '';
-        const apiUrl = `${protocol}://${host}${basePath}/api/bank_database/getAccounts?username=${username}`;
+        const apiUrl = `${baseURL}/api/bank_database/getAccounts?username=${username}`;
 
         const accountsResponse = await fetch(apiUrl, {
           cache: 'no-store',
